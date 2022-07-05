@@ -1,0 +1,6 @@
+## Interface: 90205
+## Title: MountsJournal ElvUI Skin
+## Author: sfmict
+## Version: @project-version@
+## Dependencies: MountsJournal, ElvUI
+MountsJournal_ElvUI_Skin.lua

@@ -1,0 +1,4 @@
+package-as: MountsJournal_ElvUI_Skin
+
+ignore:
+	- README.md
