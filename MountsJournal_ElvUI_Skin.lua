@@ -25,13 +25,14 @@ local function petSkin(journal, petList)
 
 	petList.controlPanel:StripTextures()
 	S:HandleEditBox(petList.searchBox)
-	petList.searchBox:SetPoint("TOPLEFT", 5, -5)
-	petList.searchBox:SetHeight(23)
+	petList.searchBox:ClearAllPoints()
+	petList.searchBox:SetPoint("TOPLEFT", 8, -8)
+	petList.searchBox:SetPoint("RIGHT", petList.closeButton, "LEFT", 2, 0)
+	petList.searchBox:SetHeight(20)
 	S:HandleCloseButton(petList.closeButton)
-	petList.closeButton:SetPoint("TOPRIGHT", 1, -1)
+	petList.closeButton:SetPoint("TOPRIGHT", 6, 7)
 
 	petList.filtersPanel:StripTextures()
-	petList.filtersPanel:SetTemplate("Transparent")
 	petList.filtersPanel:SetHeight(26)
 
 	for i, btn in ipairs(petList.filtersPanel.buttons) do
@@ -102,13 +103,11 @@ local function petSkin(journal, petList)
 	end
 
 	petList.controlButtons:StripTextures()
-	petList.controlButtons:SetTemplate("Transparent")
 	petButtonSkin(petList.randomFavoritePet)
 	petButtonSkin(petList.randomPet, true)
 	petButtonSkin(petList.noPet, true)
 
 	petList.petListFrame:StripTextures()
-	petList.petListFrame:SetTemplate("Transparent")
 	petList.petListFrame:SetPoint("TOPLEFT", petList.filtersPanel, "BOTTOMLEFT", 0, -1)
 	petList.petListFrame:SetPoint("BOTTOMRIGHT", petList.controlButtons, "TOPRIGHT", 0, 1)
 
@@ -190,7 +189,6 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 	S:HandleItemButton(bgFrame.summon2)
 
 	journal.filtersPanel:StripTextures()
-	journal.filtersPanel:SetTemplate("Transparent")
 	S:HandleButton(journal.filtersToggle)
 	journal.filtersToggle:SetSize(22, 22)
 	journal.filtersToggle:SetPoint("TOPLEFT", 4, -4)
@@ -231,7 +229,6 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 	journal.shownPanel:StripTextures()
 	journal.shownPanel:SetTemplate("Transparent")
 	bgFrame.leftInset:StripTextures()
-	bgFrame.leftInset:SetTemplate("Transparent")
 	bgFrame.leftInset:SetPoint("BOTTOMLEFT", 0, 27)
 	S:HandleScrollBar(journal.scrollFrame.scrollBar)
 	journal.scrollFrame.scrollBar:SetPoint("BOTTOMLEFT", journal.scrollFrame, "BOTTOMRIGHT", 4, 16)
