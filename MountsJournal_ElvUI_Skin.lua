@@ -314,7 +314,7 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 		dList.btn:HookScript("OnEnter", dBtnOnEnter)
 		dList.btn:HookScript("OnLeave", dBtnOnLeave)
 		hooksecurefunc(dList.btn.selectedTexture, "SetShown", dSelectedTextureSetShown)
-		dSelectedTextureSetShown(dList.btn.selectedTexture)
+		dSelectedTextureSetShown(dList.btn.selectedTexture, dList.btn.selectedTexture:IsShown())
 
 		for i, btn in ipairs(child.grid3List.mounts) do
 			btn.icon:SetTexCoord(unpack(E.TexCoords))
@@ -329,7 +329,7 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 			btn:HookScript("OnEnter", gBtnOnEnter)
 			btn:HookScript("OnLeave", gBtnOnLeave)
 			hooksecurefunc(btn.selectedTexture, "SetShown", gSelectedTextureSetShown)
-			gSelectedTextureSetShown(btn.selectedTexture)
+			gSelectedTextureSetShown(btn.selectedTexture, btn.selectedTexture:IsShown())
 		end
 	end
 
@@ -405,6 +405,7 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 
 	journal.worldMap:StripTextures()
 	ddButton(journal.worldMap.navigation)
+	journal.worldMap.navigation:SetPoint("TOPLEFT", 1, -5)
 
 	local mapSettings = journal.mapSettings
 	mapSettings:StripTextures()
