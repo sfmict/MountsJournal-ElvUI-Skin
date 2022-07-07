@@ -493,6 +493,25 @@ MountsJournalConfigClasses:HookScript("OnShow", function(self)
 	self.leftPanel:SetTemplate("Transparent")
 	S:HandleCheckBox(self.charCheck)
 
+	local mULx, mULy, mLLx, mLLy, mURx, mURy, mLRx, mLRy = unpack(E.TexCoords)
+	mULy, mLLx, mURx, mURy, mLRx, mLRy = mLLx, mULx, mULy, mLLx, mULy, mLLy
+	for i, btn in ipairs({self.leftPanel:GetChildren()}) do
+		local ULx, ULy, LLx, LLy, URx, URy, LRx, LRy = btn.icon:GetTexCoord()
+		local top = URx - ULx
+		local right = LRy - URy
+		local bottom = LRx - LLx
+		local left = LLy - ULy
+		URx = ULx + mURx * top
+		ULx = ULx + mULx * top
+		LRy = URy + mLRy * right
+		URy = URy + mURy * right
+		LRx = LLx + mLRx * bottom
+		LLx = LLx + mLLx * bottom
+		LLy = ULy + mLLy * left
+		ULy = ULy + mULy * left
+		btn.icon:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy)
+	end
+
 	self.rightPanel:StripTextures()
 	self.rightPanel:SetTemplate("Transparent")
 	self.rightPanel:SetPoint("BOTTOMLEFT", self.leftPanel, "BOTTOMRIGHT", 2, 0)
