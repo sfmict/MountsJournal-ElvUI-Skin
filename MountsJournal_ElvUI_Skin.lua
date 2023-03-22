@@ -465,7 +465,7 @@ MountsJournalConfig:HookScript("OnShow", function(self)
 
 	self.rightPanel:StripTextures()
 	self.rightPanel:SetTemplate("Transparent")
-	S:HandleScrollBar(self.rightPanelScroll.ScrollBar)
+	S:HandleTrimScrollBar(self.rightPanelScroll.ScrollBar)
 
 	S:HandleCheckBox(self.useHerbMounts)
 	S:HandleCheckBox(self.herbMountsOnZones)
@@ -516,7 +516,7 @@ MountsJournalConfigClasses:HookScript("OnShow", function(self)
 	self.rightPanel:StripTextures()
 	self.rightPanel:SetTemplate("Transparent")
 	self.rightPanel:SetPoint("BOTTOMLEFT", self.leftPanel, "BOTTOMRIGHT", 2, 0)
-	S:HandleScrollBar(self.rightPanelScroll.ScrollBar)
+	S:HandleTrimScrollBar(self.rightPanelScroll.ScrollBar)
 
 	local function reskinScrollBarArrow(frame, direction)
 		S:HandleNextPrevButton(frame, direction)
