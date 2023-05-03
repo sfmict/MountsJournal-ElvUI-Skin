@@ -1,6 +1,7 @@
-## Interface: 100007
+## Interface: 100100
 ## Title: MountsJournal ElvUI Skin
 ## Author: sfmict
 ## Version: @project-version@
+## IconTexture: 413588
 ## Dependencies: MountsJournal, ElvUI
 MountsJournal_ElvUI_Skin.lua

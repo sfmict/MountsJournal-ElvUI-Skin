@@ -559,15 +559,16 @@ MountsJournalConfigClasses:HookScript("OnShow", function(self)
 
 	reskinEditBox(self.moveFallMF)
 	reskinEditBox(self.combatMF)
+end)
 
-	local createOption = self.createOption
-	self.createOption = function(...)
-		local option = createOption(...)
+
+hooksecurefunc(MountsJournalConfigClasses, "showClassSettings", function(self)
+	for option in self.sliderPool:EnumerateActive() do
 		if not option.isSkinned then
-			S:HandleCheckBox(option)
+			S:HandleSliderFrame(option.slider)
+			option.slider:SetPoint("BOTTOMLEFT", 0, 3)
 			option.isSkinned = true
 		end
-		return option
 	end
 
 	for option in self.checkPool:EnumerateActive() do
