@@ -15,7 +15,79 @@ hooksecurefunc(MountsJournalFrame, "ADDON_LOADED", function(journal)
 end)
 
 
-local function petSkin(journal, petList)
+-- PET LIST
+local function setQuality(texture, ...)
+	texture:GetParent().icon.backdrop:SetBackdropBorderColor(...)
+end
+
+
+local function selectedTextureSetShown(texture, shown)
+	local button = texture:GetParent()
+	if button.hovered then return end
+	if shown then
+		button.backdrop:SetBackdropBorderColor(1, .8, .1)
+	else
+		local r, g, b = unpack(E.media.bordercolor)
+		button.backdrop:SetBackdropBorderColor(r, g, b)
+	end
+end
+
+
+local function btnOnEnter(button)
+	local r, g, b = unpack(E.media.rgbvaluecolor)
+	button.backdrop:SetBackdropBorderColor(r, g, b)
+	button.hovered = true
+end
+
+
+local function btnOnLeave(button)
+	local icon = button.icon or button.Icon
+	if button.selectedTexture:IsShown() then
+		button.backdrop:SetBackdropBorderColor(1, .8, .1)
+	else
+		local r, g, b = unpack(E.media.bordercolor)
+		button.backdrop:SetBackdropBorderColor(r, g, b)
+	end
+	button.hovered = nil
+end
+
+
+local function petButtonSkin(button, rightPadding)
+	button.background:SetTexture()
+	button:GetHighlightTexture():SetTexture()
+	button:CreateBackdrop('Transparent', nil, nil, true)
+	button.backdrop:ClearAllPoints()
+	button.backdrop:Point("TOPLEFT", button, 38, -1)
+	button.backdrop:Point("BOTTOMRIGHT", button, rightPadding, 1)
+	button.selectedTexture:SetTexture()
+	button.petTypeIcon:SetPoint("BOTTOMRIGHT", -3, 1)
+
+	local infoFrame = button.infoFrame
+	infoFrame.icon:SetTexCoord(unpack(E.TexCoords))
+	infoFrame.icon:CreateBackdrop(nil, nil, nil, true)
+	infoFrame.qualityBorder:SetTexture()
+
+
+	button:HookScript("OnEnter", btnOnEnter)
+	button:HookScript("OnLeave", btnOnLeave)
+	hooksecurefunc(button.selectedTexture, "SetShown", selectedTextureSetShown)
+	hooksecurefunc(infoFrame.qualityBorder, "SetVertexColor", setQuality)
+end
+
+
+local function scrollPetButtons(frame)
+	if not frame then return end
+
+	for i, btn in ipairs({frame.ScrollTarget:GetChildren()}) do
+		if not btn.isSkinned then
+			petButtonSkin(btn, -2)
+			btn.isSkinned = true
+		end
+	end
+end
+
+
+local function petListSkin(journal, petList)
 	local bgFrame = journal.bgFrame
 
 	petList:StripTextures()
@@ -43,84 +115,140 @@ local function petSkin(journal, petList)
 		btn.icon:SetTexCoord(unpack(E.TexCoords))
 	end
 
-	local function setQuality(texture, ...)
-		texture:GetParent().icon.backdrop:SetBackdropBorderColor(...)
-	end
-
-	local function selectedTextureSetShown(texture, shown)
-		local button = texture:GetParent()
-		if button.hovered then return end
-		if shown then
-			button:SetBackdropBorderColor(1, .8, .1)
-		else
-			local r, g, b = unpack(E.media.bordercolor)
-			button:SetBackdropBorderColor(r, g, b)
-		end
-	end
-
-	local function btnOnEnter(button)
-		local r, g, b = unpack(E.media.rgbvaluecolor)
-		button:SetBackdropBorderColor(r, g, b)
-		button.hovered = true
-	end
-
-	local function btnOnLeave(button)
-		local icon = button.icon or button.Icon
-		if button.selectedTexture:IsShown() then
-			button:SetBackdropBorderColor(1, .8, .1)
-		else
-			local r, g, b = unpack(E.media.bordercolor)
-			button:SetBackdropBorderColor(r, g, b)
-		end
-		button.hovered = nil
-	end
-
-	local function petButtonSkin(button, replace, resize)
-		button.background:SetTexture()
-		button:SetTemplate("Transparent", nil, nil, true)
-		button:GetHighlightTexture():SetTexture()
-		if resize then
-			button:SetSize(213, 40)
-		else
-			button:SetHeight(40)
-		end
-		button.selectedTexture:SetTexture()
-
-		if replace then
-			local point, rFrame, rPoint, x, y = button:GetPoint()
-			button:SetPoint(point, rFrame, rPoint, x, y - 1)
-		end
-
-		local infoFrame = button.infoFrame
-		infoFrame.icon:SetTexCoord(unpack(E.TexCoords))
-		infoFrame.icon:CreateBackdrop(nil, nil, nil, true)
-		infoFrame.qualityBorder:SetTexture()
-
-		button:HookScript("OnEnter", btnOnEnter)
-		button:HookScript("OnLeave", btnOnLeave)
-		hooksecurefunc(button.selectedTexture, "SetShown", selectedTextureSetShown)
-		hooksecurefunc(infoFrame.qualityBorder, "SetVertexColor", setQuality)
-	end
-
 	petList.controlButtons:StripTextures()
-	petButtonSkin(petList.randomFavoritePet)
-	petButtonSkin(petList.randomPet, true)
-	petButtonSkin(petList.noPet, true)
+	petButtonSkin(petList.randomFavoritePet, 0)
+	petButtonSkin(petList.randomPet, 0)
+	petButtonSkin(petList.noPet, 0)
 
 	petList.petListFrame:StripTextures()
 	petList.petListFrame:SetPoint("TOPLEFT", petList.filtersPanel, "BOTTOMLEFT", 0, -1)
 	petList.petListFrame:SetPoint("BOTTOMRIGHT", petList.controlButtons, "TOPRIGHT", 0, 1)
 
-	local scrollFrame = petList.listScroll
-	S:HandleScrollBar(scrollFrame.scrollBar)
-	scrollFrame.scrollBar:SetPoint("BOTTOMLEFT", petList.petListFrame, "BOTTOMRIGHT", -26, 19)
+	S:HandleTrimScrollBar(petList.petListFrame.scrollBar)
+	hooksecurefunc(petList.scrollBox, "Update", scrollPetButtons)
+end
 
-	for i, btn in ipairs(scrollFrame.buttons) do
-		petButtonSkin(btn, i ~= 1, true)
+
+-- MOUNT SCROLL BUTTONS
+local function dSelectedTextureSetShown(texture, shown)
+	local button = texture:GetParent()
+	if button.hovered then return end
+	local icon = button.dragButton.icon
+	if shown then
+		button.backdrop:SetBackdropBorderColor(1, .8, .1)
+		icon.backdrop:SetBackdropBorderColor(1, .8, .1)
+	else
+		local r, g, b = unpack(E.media.bordercolor)
+		button.backdrop:SetBackdropBorderColor(r, g, b)
+		icon.backdrop:SetBackdropBorderColor(r, g, b)
 	end
 end
 
 
+local function dBtnOnEnter(button)
+	local r, g, b = unpack(E.media.rgbvaluecolor)
+	local icon = button.dragButton.icon
+	button.backdrop:SetBackdropBorderColor(r, g, b)
+	icon.backdrop:SetBackdropBorderColor(r, g, b)
+	button.hovered = true
+end
+
+
+local function dBtnOnLeave(button)
+	local icon = button.dragButton.icon
+	if button.selectedTexture:IsShown() then
+		button.backdrop:SetBackdropBorderColor(1, .8, .1)
+		icon.backdrop:SetBackdropBorderColor(1, .8, .1)
+	else
+		local r, g, b = unpack(E.media.bordercolor)
+		button.backdrop:SetBackdropBorderColor(r, g, b)
+		icon.backdrop:SetBackdropBorderColor(r, g, b)
+	end
+	button.hovered = nil
+end
+
+
+local function gSelectedTextureSetShown(texture, shown)
+	local button = texture:GetParent()
+	if button.hovered then return end
+	if shown then
+		button.icon.backdrop:SetBackdropBorderColor(1, .8, .1)
+	else
+		local r, g, b = unpack(E.media.bordercolor)
+		button.icon.backdrop:SetBackdropBorderColor(r, g, b)
+	end
+end
+
+
+local function gBtnOnEnter(button)
+	local r, g, b = unpack(E.media.rgbvaluecolor)
+	button.icon.backdrop:SetBackdropBorderColor(r, g, b)
+	button.hovered = true
+end
+
+
+local function gBtnOnLeave(button)
+	if button.selectedTexture:IsShown() then
+		button.icon.backdrop:SetBackdropBorderColor(1, .8, .1)
+	else
+		local r, g, b = unpack(E.media.bordercolor)
+		button.icon.backdrop:SetBackdropBorderColor(r, g, b)
+	end
+	button.hovered = nil
+end
+
+
+local function scrollMountButtons(frame)
+	if not frame then return end
+
+	for i, btn in ipairs({frame.ScrollTarget:GetChildren()}) do
+		if not btn.isSkinned then
+			if btn.mounts then
+				for i, g3btn in ipairs(btn.mounts) do
+					g3btn.icon:SetTexCoord(unpack(E.TexCoords))
+					g3btn.icon:CreateBackdrop(nil, nil, nil, true)
+					g3btn.highlight:SetTexture()
+					g3btn.selectedTexture:SetTexture()
+
+					g3btn.fly:SetPoint("TOPLEFT", g3btn, "TOPRIGHT", 2, 0)
+					g3btn.ground:SetPoint("TOPLEFT", g3btn, "TOPRIGHT", 2, -14)
+					g3btn.swimming:SetPoint("TOPLEFT", g3btn, "TOPRIGHT", 2, -28)
+
+					g3btn:HookScript("OnEnter", gBtnOnEnter)
+					g3btn:HookScript("OnLeave", gBtnOnLeave)
+					hooksecurefunc(g3btn.selectedTexture, "SetShown", gSelectedTextureSetShown)
+					gSelectedTextureSetShown(g3btn.selectedTexture, g3btn.selectedTexture:IsShown())
+				end
+			else
+				btn:StripTextures()
+				btn:CreateBackdrop("Transparent", nil, nil, true)
+				btn.backdrop:ClearAllPoints()
+				btn.backdrop:Point('TOPLEFT', btn, 2, -2)
+				btn.backdrop:Point('BOTTOMRIGHT', btn, -2, 2)
+
+				btn.factionIcon:Size(38)
+				btn.factionIcon:SetPoint("BOTTOMRIGHT", -2, 3)
+				
+				btn.dragButton.highlight:SetTexture()
+				btn.dragButton.icon:Size(40)
+				btn.dragButton.icon:SetTexCoord(unpack(E.TexCoords))
+				btn.dragButton.icon:CreateBackdrop(nil, nil, nil, true)
+				btn.dragButton.activeTexture:SetTexture(E.Media.Textures.White8x8)
+				btn.dragButton.activeTexture:SetVertexColor(0.9, 0.8, 0.1, 0.3)
+
+				btn:HookScript("OnEnter", dBtnOnEnter)
+				btn:HookScript("OnLeave", dBtnOnLeave)
+				hooksecurefunc(btn.selectedTexture, "SetShown", dSelectedTextureSetShown)
+				dSelectedTextureSetShown(btn.selectedTexture, btn.selectedTexture:IsShown())
+			end
+
+			btn.isSkinned = true
+		end
+	end
+end
+
+
+-- JOURNAL
 hooksecurefunc(MountsJournalFrame, "init", function(journal)
 	local function ddStreachButton(btn)
 		btn.Arrow:SetTexture(E.Media.Textures.ArrowUp)
@@ -230,105 +358,9 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 	journal.shownPanel:SetTemplate("Transparent")
 	bgFrame.leftInset:StripTextures()
 	bgFrame.leftInset:SetPoint("BOTTOMLEFT", 0, 27)
-	S:HandleScrollBar(journal.scrollFrame.scrollBar)
-	journal.scrollFrame.scrollBar:SetPoint("BOTTOMLEFT", journal.scrollFrame, "BOTTOMRIGHT", 4, 16)
-
-	local function dSelectedTextureSetShown(texture, shown)
-		local button = texture:GetParent()
-		if button.hovered then return end
-		local icon = button:GetParent().dragButton.icon
-		if shown then
-			button:SetBackdropBorderColor(1, .8, .1)
-			icon.backdrop:SetBackdropBorderColor(1, .8, .1)
-		else
-			local r, g, b = unpack(E.media.bordercolor)
-			button:SetBackdropBorderColor(r, g, b)
-			icon.backdrop:SetBackdropBorderColor(r, g, b)
-		end
-	end
-
-	local function dBtnOnEnter(button)
-		local r, g, b = unpack(E.media.rgbvaluecolor)
-		local icon = button:GetParent().dragButton.icon
-		button:SetBackdropBorderColor(r, g, b)
-		icon.backdrop:SetBackdropBorderColor(r, g, b)
-		button.hovered = true
-	end
-
-	local function dBtnOnLeave(button)
-		local icon = button:GetParent().dragButton.icon
-		if button.selectedTexture:IsShown() then
-			button:SetBackdropBorderColor(1, .8, .1)
-			icon.backdrop:SetBackdropBorderColor(1, .8, .1)
-		else
-			local r, g, b = unpack(E.media.bordercolor)
-			button:SetBackdropBorderColor(r, g, b)
-			icon.backdrop:SetBackdropBorderColor(r, g, b)
-		end
-		button.hovered = nil
-	end
-
-	local function gSelectedTextureSetShown(texture, shown)
-		local button = texture:GetParent()
-		if button.hovered then return end
-		if shown then
-			button.icon.backdrop:SetBackdropBorderColor(1, .8, .1)
-		else
-			local r, g, b = unpack(E.media.bordercolor)
-			button.icon.backdrop:SetBackdropBorderColor(r, g, b)
-		end
-	end
-
-	local function gBtnOnEnter(button)
-		local r, g, b = unpack(E.media.rgbvaluecolor)
-		button.icon.backdrop:SetBackdropBorderColor(r, g, b)
-		button.hovered = true
-	end
-
-	local function gBtnOnLeave(button)
-		if button.selectedTexture:IsShown() then
-			button.icon.backdrop:SetBackdropBorderColor(1, .8, .1)
-		else
-			local r, g, b = unpack(E.media.bordercolor)
-			button.icon.backdrop:SetBackdropBorderColor(r, g, b)
-		end
-		button.hovered = nil
-	end
-
-	for _, child in ipairs(journal.scrollFrame.buttons) do
-		local dList = child.defaultList
-		dList.dragButton.highlight:SetTexture()
-		dList.dragButton.icon:SetTexCoord(unpack(E.TexCoords))
-		dList.dragButton.icon:CreateBackdrop(nil, nil, nil, true)
-		dList.dragButton.activeTexture:SetTexture(E.Media.Textures.White8x8)
-		dList.dragButton.activeTexture:SetVertexColor(0.9, 0.8, 0.1, 0.3)
-		dList.btn:StripTextures()
-		dList.btn:SetTemplate("Transparent", nil, nil, true)
-		dList.btn:SetSize(182, 40)
-		dList.btn:SetPoint("LEFT", dList.dragButton, "RIGHT", 1, 0)
-		dList.btn.factionIcon:SetSize(38, 38)
-
-		dList.btn:HookScript("OnEnter", dBtnOnEnter)
-		dList.btn:HookScript("OnLeave", dBtnOnLeave)
-		hooksecurefunc(dList.btn.selectedTexture, "SetShown", dSelectedTextureSetShown)
-		dSelectedTextureSetShown(dList.btn.selectedTexture, dList.btn.selectedTexture:IsShown())
-
-		for i, btn in ipairs(child.grid3List.mounts) do
-			btn.icon:SetTexCoord(unpack(E.TexCoords))
-			btn.icon:CreateBackdrop(nil, nil, nil, true)
-			btn.highlight:SetTexture()
-			btn.selectedTexture:SetTexture()
-
-			btn.fly:SetPoint("TOPLEFT", btn, "TOPRIGHT", 2, 0)
-			btn.ground:SetPoint("TOPLEFT", btn, "TOPRIGHT", 2, -14)
-			btn.swimming:SetPoint("TOPLEFT", btn, "TOPRIGHT", 2, -28)
-
-			btn:HookScript("OnEnter", gBtnOnEnter)
-			btn:HookScript("OnLeave", gBtnOnLeave)
-			hooksecurefunc(btn.selectedTexture, "SetShown", gSelectedTextureSetShown)
-			gSelectedTextureSetShown(btn.selectedTexture, btn.selectedTexture:IsShown())
-		end
-	end
+	S:HandleTrimScrollBar(journal.bgFrame.scrollBar)
+	hooksecurefunc(journal.scrollBox, "Update", scrollMountButtons)
+	scrollMountButtons(journal.scrollBox)
 
 	journal.tags.mountOptionsMenu:ddSetDisplayMode("ElvUI")
 	S:HandleSliderFrame(journal.weightFrame.slider)
@@ -391,11 +423,11 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 
 	local petSelectionClick = mountInfo.petSelectionBtn:GetScript("OnClick")
 	mountInfo.petSelectionBtn:HookScript("OnClick", function(self)
-		petSkin(journal, self.petSelectionList)
+		petListSkin(journal, self.petSelectionList)
 		self:SetScript("OnClick", petSelectionClick)
 	end)
 
-	journal.mountDisplay.modelSceneSettingsButton:ddSetDisplayMode("ElvUI")
+	journal.mountDisplay.info.modelSceneSettingsButton:ddSetDisplayMode("ElvUI")
 	journal.multipleMountBtn:ddSetDisplayMode("ElvUI")
 	ddButton(journal.modelScene.animationsCombobox)
 	journal.modelScene.animationsCombobox:SetPoint("LEFT", journal.modelScene.modelControl, "RIGHT", 10, -2)
@@ -429,9 +461,7 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 	mapSettings.existingLists:SetPoint("TOPLEFT", bgFrame, "TOPRIGHT", 2, -1)
 	mapSettings.existingLists:SetPoint("BOTTOMLEFT", bgFrame, "BOTTOMRIGHT", 2, 1)
 	S:HandleEditBox(mapSettings.existingLists.searchBox)
-	mapSettings.existingLists.searchBox:SetPoint("TOPLEFT", 5, -4)
-	S:HandleScrollBar(mapSettings.existingLists.scrollFrame.ScrollBar)
-	mapSettings.existingLists.scrollFrame:SetPoint("TOPLEFT", 5, -28)
+	S:HandleTrimScrollBar(mapSettings.existingLists.scrollFrame.ScrollBar)
 
 	hooksecurefunc(mapSettings.existingLists, "collapse", function(self, btn)
 		local checked = btn:GetChecked()
@@ -445,6 +475,7 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 end)
 
 
+-- OPTIONS
 MountsJournalConfig:HookScript("OnShow", function(self)
 	self.leftPanel:StripTextures()
 	self.leftPanel:SetTemplate("Transparent")
