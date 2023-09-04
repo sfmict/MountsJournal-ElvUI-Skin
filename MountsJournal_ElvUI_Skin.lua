@@ -126,6 +126,8 @@ local function petListSkin(journal, petList)
 
 	S:HandleTrimScrollBar(petList.petListFrame.scrollBar)
 	hooksecurefunc(petList.scrollBox, "Update", scrollPetButtons)
+
+	petList.companionOptionsMenu:ddSetDisplayMode("ElvUI")
 end
 
 
