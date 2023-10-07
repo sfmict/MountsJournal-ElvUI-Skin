@@ -67,7 +67,6 @@ local function petButtonSkin(button, rightPadding)
 	infoFrame.icon:CreateBackdrop(nil, nil, nil, true)
 	infoFrame.qualityBorder:SetTexture()
 
-
 	button:HookScript("OnEnter", btnOnEnter)
 	button:HookScript("OnLeave", btnOnLeave)
 	hooksecurefunc(button.selectedTexture, "SetShown", selectedTextureSetShown)
@@ -132,41 +131,46 @@ end
 
 
 -- MOUNT SCROLL BUTTONS
+local function dSetQuality(texture, ...)
+	texture:GetParent().icon.backdrop:SetBackdropBorderColor(...)
+end
+
+
 local function dSelectedTextureSetShown(texture, shown)
 	local button = texture:GetParent()
 	if button.hovered then return end
-	local icon = button.dragButton.icon
 	if shown then
 		button.backdrop:SetBackdropBorderColor(1, .8, .1)
-		icon.backdrop:SetBackdropBorderColor(1, .8, .1)
 	else
 		local r, g, b = unpack(E.media.bordercolor)
 		button.backdrop:SetBackdropBorderColor(r, g, b)
-		icon.backdrop:SetBackdropBorderColor(r, g, b)
 	end
 end
 
 
 local function dBtnOnEnter(button)
 	local r, g, b = unpack(E.media.rgbvaluecolor)
-	local icon = button.dragButton.icon
 	button.backdrop:SetBackdropBorderColor(r, g, b)
-	icon.backdrop:SetBackdropBorderColor(r, g, b)
 	button.hovered = true
 end
 
 
 local function dBtnOnLeave(button)
-	local icon = button.dragButton.icon
 	if button.selectedTexture:IsShown() then
 		button.backdrop:SetBackdropBorderColor(1, .8, .1)
-		icon.backdrop:SetBackdropBorderColor(1, .8, .1)
 	else
 		local r, g, b = unpack(E.media.bordercolor)
 		button.backdrop:SetBackdropBorderColor(r, g, b)
-		icon.backdrop:SetBackdropBorderColor(r, g, b)
 	end
 	button.hovered = nil
+end
+
+
+local function gSetQuality(texture, ...)
+	local button = texture:GetParent()
+	if not (button.hovered or button.selectedTexture:IsShown()) then
+		button.icon.backdrop:SetBackdropBorderColor(...)
+	end
 end
 
 
@@ -176,8 +180,7 @@ local function gSelectedTextureSetShown(texture, shown)
 	if shown then
 		button.icon.backdrop:SetBackdropBorderColor(1, .8, .1)
 	else
-		local r, g, b = unpack(E.media.bordercolor)
-		button.icon.backdrop:SetBackdropBorderColor(r, g, b)
+		button.icon.backdrop:SetBackdropBorderColor(button.qualityBorder:GetVertexColor())
 	end
 end
 
@@ -193,8 +196,7 @@ local function gBtnOnLeave(button)
 	if button.selectedTexture:IsShown() then
 		button.icon.backdrop:SetBackdropBorderColor(1, .8, .1)
 	else
-		local r, g, b = unpack(E.media.bordercolor)
-		button.icon.backdrop:SetBackdropBorderColor(r, g, b)
+		button.icon.backdrop:SetBackdropBorderColor(button.qualityBorder:GetVertexColor())
 	end
 	button.hovered = nil
 end
@@ -211,6 +213,7 @@ local function scrollMountButtons(frame)
 					g3btn.icon:CreateBackdrop(nil, nil, nil, true)
 					g3btn.highlight:SetTexture()
 					g3btn.selectedTexture:SetTexture()
+					g3btn.qualityBorder:SetTexture()
 
 					g3btn.fly:SetPoint("TOPLEFT", g3btn, "TOPRIGHT", 2, 0)
 					g3btn.ground:SetPoint("TOPLEFT", g3btn, "TOPRIGHT", 2, -14)
@@ -218,6 +221,7 @@ local function scrollMountButtons(frame)
 
 					g3btn:HookScript("OnEnter", gBtnOnEnter)
 					g3btn:HookScript("OnLeave", gBtnOnLeave)
+					hooksecurefunc(g3btn.qualityBorder, "SetVertexColor", gSetQuality)
 					hooksecurefunc(g3btn.selectedTexture, "SetShown", gSelectedTextureSetShown)
 					gSelectedTextureSetShown(g3btn.selectedTexture, g3btn.selectedTexture:IsShown())
 				end
@@ -232,6 +236,7 @@ local function scrollMountButtons(frame)
 				btn.factionIcon:SetPoint("BOTTOMRIGHT", -2, 3)
 				
 				btn.dragButton.highlight:SetTexture()
+				btn.dragButton.qualityBorder:SetTexture()
 				btn.dragButton.icon:Size(40)
 				btn.dragButton.icon:SetTexCoord(unpack(E.TexCoords))
 				btn.dragButton.icon:CreateBackdrop(nil, nil, nil, true)
@@ -240,6 +245,8 @@ local function scrollMountButtons(frame)
 
 				btn:HookScript("OnEnter", dBtnOnEnter)
 				btn:HookScript("OnLeave", dBtnOnLeave)
+				hooksecurefunc(btn.dragButton.qualityBorder, "SetVertexColor", dSetQuality)
+				dSetQuality(btn.dragButton.qualityBorder, btn.dragButton.qualityBorder:GetVertexColor())
 				hooksecurefunc(btn.selectedTexture, "SetShown", dSelectedTextureSetShown)
 				dSelectedTextureSetShown(btn.selectedTexture, btn.selectedTexture:IsShown())
 			end
@@ -365,8 +372,8 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 	scrollMountButtons(journal.scrollBox)
 
 	journal.tags.mountOptionsMenu:ddSetDisplayMode("ElvUI")
-	S:HandleSliderFrame(journal.weightFrame.slider)
-	journal.weightFrame.slider:SetPoint("BOTTOMLEFT", 0, 3)
+	S:HandleSliderFrame(journal.percentSlider.slider)
+	journal.percentSlider.slider:SetPoint("BOTTOMLEFT", 0, 3)
 
 	S:HandleSliderFrame(journal.xInitialAcceleration.slider)
 	journal.xInitialAcceleration.slider:SetPoint("BOTTOMLEFT", 0, 3)
@@ -514,6 +521,7 @@ MountsJournalConfig:HookScript("OnShow", function(self)
 	S:HandleCheckBox(self.noPetInRaid)
 	S:HandleCheckBox(self.noPetInGroup)
 	S:HandleCheckBox(self.copyMountTarget)
+	S:HandleCheckBox(self.coloredMountNames)
 	S:HandleCheckBox(self.arrowButtons)
 	S:HandleCheckBox(self.openLinks)
 	S:HandleCheckBox(self.showWowheadLink)
