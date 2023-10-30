@@ -481,6 +481,12 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 	ddStreachButton(bgFrame.profilesMenu)
 	bgFrame.profilesMenu:ddSetDisplayMode("ElvUI")
 	S:HandleButton(bgFrame.btnConfig)
+
+	bgFrame.calendarFrame:StripTextures()
+	-- bgFrame.calendarFrame.monthBackground:StripTextures()
+	-- bgFrame.calendarFrame.yearBackground:StripTextures()
+	S:HandleNextPrevButton(bgFrame.calendarFrame.prevMonthButton, "left", nil, true)
+	S:HandleNextPrevButton(bgFrame.calendarFrame.nextMonthButton, "right", nil, true)
 end)
 
 
