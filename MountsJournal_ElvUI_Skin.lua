@@ -391,6 +391,7 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 	journal.yMinSpeed.slider:SetPoint("BOTTOMLEFT", 0, 3)
 
 	local mountInfo = journal.mountDisplay.info
+	mountInfo.link.lang:ddSetDisplayMode("ElvUI")
 	S:HandleIcon(mountInfo.icon, true)
 	S:HandleButton(mountInfo.mountDescriptionToggle)
 	mountInfo.mountDescriptionToggle:SetWidth(18)
@@ -483,6 +484,7 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 	ddStreachButton(bgFrame.profilesMenu)
 	bgFrame.profilesMenu:ddSetDisplayMode("ElvUI")
 	S:HandleButton(bgFrame.btnConfig)
+	S:HandleButton(journal.mountSpecial)
 
 	bgFrame.calendarFrame:StripTextures()
 	S:HandleNextPrevButton(bgFrame.calendarFrame.prevMonthButton, "left", nil, true)
