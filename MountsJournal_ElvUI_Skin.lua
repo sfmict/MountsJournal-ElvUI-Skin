@@ -294,7 +294,21 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 	local bgFrame = journal.bgFrame
 	S:HandlePortraitFrame(bgFrame)
 	S:HandleCloseButton(bgFrame.closeButton)
-	bgFrame.Center:Hide()
+
+	local function updateBG(self)
+		local collect = journal.CollectionsJournal
+		local show = not self:IsShown()
+		collect.Center:SetShown(show)
+		collect.TopEdge:SetShown(show)
+		collect.RightEdge:SetShown(show)
+		collect.BottomEdge:SetShown(show)
+		collect.LeftEdge:SetShown(show)
+		collect.TitleContainer:SetShown(show)
+		collect.CloseButton:SetShown(show)
+	end
+	updateBG(bgFrame)
+	bgFrame:HookScript("OnShow", updateBG)
+	bgFrame:HookScript("OnHide", updateBG)
 
 	journal.navBar:StripTextures()
 	journal.navBar.overlay:StripTextures()
