@@ -303,7 +303,7 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 		collect.RightEdge:SetShown(show)
 		collect.BottomEdge:SetShown(show)
 		collect.LeftEdge:SetShown(show)
-		collect.TitleContainer:SetShown(show)
+		CollectionsJournalTitleText:SetShown(show)
 		collect.CloseButton:SetShown(show)
 	end
 	updateBG(bgFrame)
