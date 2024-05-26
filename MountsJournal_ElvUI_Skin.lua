@@ -569,24 +569,45 @@ MountsJournalConfig:HookScript("OnShow", function(self)
 	S:HandleTrimScrollBar(self.rightPanelScroll.ScrollBar)
 
 	if self.showMinimapButton then -- classic
+		self.minimapGroup:StripTextures()
+		self.minimapGroup:SetTemplate(nil, true)
 		S:HandleCheckBox(self.showMinimapButton)
 		S:HandleCheckBox(self.lockMinimapButton)
 	end
+
 	if self.useHerbMounts then -- retail
+		self.herbGroup:StripTextures()
+		self.herbGroup:SetTemplate(nil, true)
 		S:HandleCheckBox(self.useHerbMounts)
 		S:HandleCheckBox(self.herbMountsOnZones)
 	end
+
+	self.repairGroup:StripTextures()
+	self.repairGroup:SetTemplate(nil, true)
 	S:HandleCheckBox(self.useRepairMounts)
 	S:HandleCheckBox(self.repairFlyable)
+	S:HandleCheckBox(self.freeSlots)
+
+	if self.magicBroomGroup then -- retail
+		self.magicBroomGroup:StripTextures()
+		self.magicBroomGroup:SetTemplate(nil, true)
+	end
 	S:HandleCheckBox(self.useMagicBroom)
+
 	if self.useUnderlightAngler then
+		self.underlightAnglerGroup:StripTextures()
+		self.underlightAnglerGroup:SetTemplate(nil, true)
 		S:HandleCheckBox(self.useUnderlightAngler)
 		S:HandleCheckBox(self.autoUseUnderlightAngler)
 	end
+
+	self.petGroup:StripTextures()
+	self.petGroup:SetTemplate(nil, true)
 	S:HandleCheckBox(self.summonPetEvery)
 	S:HandleCheckBox(self.summonPetOnlyFavorites)
 	S:HandleCheckBox(self.noPetInRaid)
 	S:HandleCheckBox(self.noPetInGroup)
+
 	S:HandleCheckBox(self.copyMountTarget)
 	if self.coloredMountNames then -- retail
 		S:HandleCheckBox(self.coloredMountNames)
