@@ -355,7 +355,6 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 
 	S:HandleItemButton(bgFrame.summon1)
 	S:HandleItemButton(bgFrame.summon2)
-	if bgFrame.summon3 then S:HandleItemButton(bgFrame.summon3) end -- retail
 
 	journal.filtersPanel:StripTextures()
 	S:HandleButton(journal.filtersToggle)
