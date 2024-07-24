@@ -543,26 +543,22 @@ MountsJournalConfig:HookScript("OnShow", function(self)
 	self.leftPanel:SetTemplate("Transparent")
 
 	S:HandleCheckBox(self.waterJump)
-	S:HandleButton(self.createMacroBtn)
+	if self.createMacroBtn then -- classic
+		S:HandleButton(self.createMacroBtn)
+	end
 	self.bindMount.selectedHighlight:SetTexture(E.media.normTex)
 	self.bindMount.selectedHighlight:Point("TOPLEFT", 1, -1)
 	self.bindMount.selectedHighlight:Point("BOTTOMRIGHT", -1, 1)
 	self.bindMount.selectedHighlight:SetColorTexture(1, 1, 1, .25)
 	S:HandleButton(self.bindMount)
-	S:HandleButton(self.createSecondMacroBtn)
+	if self.createSecondMacroBtn then -- classic
+		S:HandleButton(self.createSecondMacroBtn)
+	end
 	self.bindSecondMount.selectedHighlight:SetTexture(E.media.normTex)
 	self.bindSecondMount.selectedHighlight:Point("TOPLEFT", 1, -1)
 	self.bindSecondMount.selectedHighlight:Point("BOTTOMRIGHT", -1, 1)
 	self.bindSecondMount.selectedHighlight:SetColorTexture(1, 1, 1, .25)
 	S:HandleButton(self.bindSecondMount)
-	if self.createThirdMacroBtn then -- retail
-		S:HandleButton(self.createThirdMacroBtn)
-		self.bindThirdMount.selectedHighlight:SetTexture(E.media.normTex)
-		self.bindThirdMount.selectedHighlight:Point("TOPLEFT", 1, -1)
-		self.bindThirdMount.selectedHighlight:Point("BOTTOMRIGHT", -1, 1)
-		self.bindThirdMount.selectedHighlight:SetColorTexture(1, 1, 1, .25)
-		S:HandleButton(self.bindThirdMount)
-	end
 
 	self.rightPanel:StripTextures()
 	self.rightPanel:SetTemplate("Transparent")
