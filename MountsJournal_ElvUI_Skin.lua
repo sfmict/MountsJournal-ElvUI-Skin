@@ -353,6 +353,22 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 		bgFrame.slotButton.ItemIcon:SetSize(width * scale, height * scale)
 	end
 
+	if bgFrame.OpenDynamicFlightSkillTreeButton then -- retail
+		local function HandleDynamicFlightButton(button)
+			button:SetPushedTexture(0)
+			button:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
+			button:SetNormalTexture(0)
+
+			local icon = select(4, button:GetRegions())
+			if icon then
+				S:HandleIcon(icon)
+			end
+		end
+
+		HandleDynamicFlightButton(bgFrame.OpenDynamicFlightSkillTreeButton)
+		HandleDynamicFlightButton(bgFrame.DynamicFlightModeButton)
+	end
+
 	S:HandleItemButton(bgFrame.summon1)
 	S:HandleItemButton(bgFrame.summon2)
 
