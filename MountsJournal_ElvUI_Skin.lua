@@ -305,6 +305,9 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 		collect.LeftEdge:SetShown(show)
 		CollectionsJournalTitleText:SetShown(show)
 		collect.CloseButton:SetShown(show)
+		if collect.shadow then -- retail
+			collect.shadow:SetShown(show)
+		end
 	end
 	updateBG(bgFrame)
 	bgFrame:HookScript("OnShow", updateBG)
@@ -550,6 +553,24 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 	S:HandleNextPrevButton(bgFrame.calendarFrame.prevMonthButton, "left", nil, true)
 	S:HandleNextPrevButton(bgFrame.calendarFrame.nextMonthButton, "right", nil, true)
 end)
+
+
+-- SUMMON PANEL
+if MountsJournal.summonPanel then -- retail
+	hooksecurefunc(MountsJournalConfig, "PLAYER_LOGIN", function()
+		local summonPanel = MountsJournal.summonPanel
+		summonPanel:StripTextures()
+		summonPanel:CreateBackdrop("Transparent")
+
+		summonPanel.backdrop:SetShown(not summonPanel.config.isLocked)
+		hooksecurefunc(summonPanel, "setLocked", function(self)
+			self.backdrop:SetShown(not self.config.isLocked)
+		end)
+
+		S:HandleItemButton(summonPanel.summon1)
+		S:HandleItemButton(summonPanel.summon2)
+	end)
+end
 
 
 -- OPTIONS
