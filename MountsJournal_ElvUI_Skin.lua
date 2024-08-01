@@ -562,9 +562,11 @@ if MountsJournal.summonPanel then -- retail
 		summonPanel:StripTextures()
 		summonPanel:CreateBackdrop("Transparent")
 
-		summonPanel.backdrop:SetShown(not summonPanel.config.isLocked)
-		hooksecurefunc(summonPanel, "setLocked", function(self)
-			self.backdrop:SetShown(not self.config.isLocked)
+		summonPanel.resize:HookScript("OnHide", function(self)
+			self:GetParent().backdrop:Hide()
+		end)
+		summonPanel.resize:HookScript("OnShow", function(self)
+			self:GetParent().backdrop:Show()
 		end)
 
 		S:HandleItemButton(summonPanel.summon1)
