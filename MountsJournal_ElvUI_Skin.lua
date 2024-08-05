@@ -321,25 +321,8 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 	journal.navBar.homeButton.xoffset = 1
 	journal.navBar.dropDown:ddSetDisplayMode("ElvUI")
 
-	journal.navBarBtn:StripTextures()
-	S:HandleButton(journal.navBarBtn)
-	journal.navBarBtn:SetSize(42, 28)
-	journal.navBarBtn:SetPoint("TOPRIGHT", -6, -62)
-	journal.navBarBtn.texture:SetSize(40, 26)
-	journal.navBarBtn.texture:SetTexture("Interface/QuestFrame/UI-QuestMap_Button")
-	journal.navBarBtn.texture:SetTexCoord(.26, .7125, .075, .4125)
-	journal.navBarBtn.texture.SetTexCoord = E.noop
-	journal.navBarBtn.texture:ClearAllPoints()
-	journal.navBarBtn.texture:SetPoint("CENTER")
-	local checkedTexture = journal.navBarBtn:GetCheckedTexture()
-	checkedTexture:SetTexture(E.Media.Textures.White8x8)
-	checkedTexture:SetVertexColor(0.9, 0.8, 0.1, 0.2)
-	checkedTexture:SetPoint("TOPLEFT", 1, -1)
-	checkedTexture:SetPoint("BOTTOMRIGHT", -1, 1)
-
 	journal.mountCount:StripTextures()
 	bgFrame.rightInset:StripTextures()
-	bgFrame.rightInset:SetPoint("TOPRIGHT", journal.navBarBtn, "BOTTOMRIGHT", 1, 0)
 	bgFrame.rightInset:SetPoint("BOTTOM", 0, 27)
 	journal.mountDisplay:StripTextures()
 	journal.mountDisplay.shadowOverlay:StripTextures()
@@ -417,7 +400,7 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 	journal.shownPanel:SetTemplate("Transparent")
 	bgFrame.leftInset:StripTextures()
 	bgFrame.leftInset:SetPoint("BOTTOMLEFT", 0, 27)
-	S:HandleTrimScrollBar(journal.bgFrame.scrollBar)
+	S:HandleTrimScrollBar(journal.leftInset.scrollBar)
 	hooksecurefunc(journal.scrollBox, "Update", scrollMountButtons)
 	scrollMountButtons(journal.scrollBox)
 
@@ -546,12 +529,22 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 	S:HandleButton(journal.summonButton)
 	ddStreachButton(bgFrame.profilesMenu)
 	bgFrame.profilesMenu:ddSetDisplayMode("ElvUI")
-	S:HandleButton(bgFrame.btnConfig)
 	S:HandleButton(journal.mountSpecial)
 
 	bgFrame.calendarFrame:StripTextures()
 	S:HandleNextPrevButton(bgFrame.calendarFrame.prevMonthButton, "left", nil, true)
 	S:HandleNextPrevButton(bgFrame.calendarFrame.nextMonthButton, "right", nil, true)
+
+	bgFrame.settingsBackground:StripTextures()
+	for i, tab in ipairs(bgFrame.settingsBackground.Tabs) do
+		S:HandleTab(tab)
+	end
+
+	S:HandleTab(journal.bgFrame.settingsTab)
+	S:HandleTab(journal.bgFrame.mapTab)
+	journal.bgFrame.mapTab:Point("RIGHT", journal.bgFrame.settingsTab, "LEFT", 5, 0)
+	S:HandleTab(journal.bgFrame.modelTab)
+	journal.bgFrame.modelTab:Point("RIGHT", journal.bgFrame.mapTab, "LEFT", 5, 0)
 end)
 
 
@@ -568,6 +561,7 @@ if MountsJournal.summonPanel then -- retail
 		summonPanel.resize:HookScript("OnShow", function(self)
 			self:GetParent().backdrop:Show()
 		end)
+		summonPanel.backdrop:SetShown(summonPanel.resize:IsShown())
 
 		S:HandleItemButton(summonPanel.summon1)
 		S:HandleItemButton(summonPanel.summon2)
