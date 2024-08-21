@@ -104,7 +104,7 @@ local function petListSkin(journal, petList)
 	petList.searchBox:SetPoint("RIGHT", petList.closeButton, "LEFT", 2, 0)
 	petList.searchBox:SetHeight(20)
 	S:HandleCloseButton(petList.closeButton)
-	petList.closeButton:SetPoint("TOPRIGHT", 6, 7)
+	petList.closeButton:SetPoint("TOPRIGHT", 4, 4)
 
 	if petList.filtersPanel then -- retail
 		petList.filtersPanel:StripTextures()
@@ -549,9 +549,9 @@ end)
 
 
 -- SUMMON PANEL
-if MountsJournal.summonPanel then -- retail
+if MountsJournalFrame.summonPanel then -- retail
 	hooksecurefunc(MountsJournalConfig, "PLAYER_LOGIN", function()
-		local summonPanel = MountsJournal.summonPanel
+		local summonPanel = MountsJournalFrame.summonPanel
 		summonPanel:StripTextures()
 		summonPanel:CreateBackdrop("Transparent")
 
@@ -578,19 +578,21 @@ MountsJournalConfig:HookScript("OnShow", function(self)
 	if self.createMacroBtn then -- classic
 		S:HandleButton(self.createMacroBtn)
 	end
-	self.bindMount.selectedHighlight:SetTexture(E.media.normTex)
-	self.bindMount.selectedHighlight:Point("TOPLEFT", 1, -1)
-	self.bindMount.selectedHighlight:Point("BOTTOMRIGHT", -1, 1)
-	self.bindMount.selectedHighlight:SetColorTexture(1, 1, 1, .25)
-	S:HandleButton(self.bindMount)
+	local bindSummon1 = self.bindMount or self.bindSummon1
+	bindSummon1.selectedHighlight:SetTexture(E.media.normTex)
+	bindSummon1.selectedHighlight:Point("TOPLEFT", 1, -1)
+	bindSummon1.selectedHighlight:Point("BOTTOMRIGHT", -1, 1)
+	bindSummon1.selectedHighlight:SetColorTexture(1, 1, 1, .25)
+	S:HandleButton(bindSummon1)
 	if self.createSecondMacroBtn then -- classic
 		S:HandleButton(self.createSecondMacroBtn)
 	end
-	self.bindSecondMount.selectedHighlight:SetTexture(E.media.normTex)
-	self.bindSecondMount.selectedHighlight:Point("TOPLEFT", 1, -1)
-	self.bindSecondMount.selectedHighlight:Point("BOTTOMRIGHT", -1, 1)
-	self.bindSecondMount.selectedHighlight:SetColorTexture(1, 1, 1, .25)
-	S:HandleButton(self.bindSecondMount)
+	local bindSummon2 = self.bindSecondMount or self.bindSummon2
+	bindSummon2.selectedHighlight:SetTexture(E.media.normTex)
+	bindSummon2.selectedHighlight:Point("TOPLEFT", 1, -1)
+	bindSummon2.selectedHighlight:Point("BOTTOMRIGHT", -1, 1)
+	bindSummon2.selectedHighlight:SetColorTexture(1, 1, 1, .25)
+	S:HandleButton(bindSummon2)
 
 	self.rightPanel:StripTextures()
 	self.rightPanel:SetTemplate("Transparent")
@@ -651,6 +653,36 @@ MountsJournalConfig:HookScript("OnShow", function(self)
 end)
 
 
+local function reskinScrollBarArrow(frame, direction)
+	S:HandleNextPrevButton(frame, direction)
+	frame.Overlay:SetAlpha(0)
+	frame.Texture:Hide()
+end
+
+
+local function reskinEditScrollBar(scrollBar)
+	scrollBar.Background:Hide()
+	scrollBar:StripTextures()
+
+	local track = scrollBar.Track
+	track:SetTemplate("Transparent")
+	track:ClearAllPoints()
+	track:SetPoint("TOPLEFT", 4, -21)
+	track:SetPoint("BOTTOMRIGHT", -3, 21)
+
+	local thumb = track.Thumb
+	thumb.Middle:Hide()
+	thumb.Begin:Hide()
+	thumb.End:Hide()
+
+	thumb:SetTemplate(nil, true, true)
+	thumb:SetBackdropColor(unpack(E.media.rgbvaluecolor))
+
+	reskinScrollBarArrow(scrollBar.Back, "up")
+	reskinScrollBarArrow(scrollBar.Forward, "down")
+end
+
+
 MountsJournalConfigClasses:HookScript("OnShow", function(self)
 	self.leftPanel:StripTextures()
 	self.leftPanel:SetTemplate("Transparent")
@@ -680,12 +712,6 @@ MountsJournalConfigClasses:HookScript("OnShow", function(self)
 	self.rightPanel:SetPoint("BOTTOMLEFT", self.leftPanel, "BOTTOMRIGHT", 2, 0)
 	S:HandleTrimScrollBar(self.rightPanelScroll.ScrollBar)
 
-	local function reskinScrollBarArrow(frame, direction)
-		S:HandleNextPrevButton(frame, direction)
-		frame.Overlay:SetAlpha(0)
-		frame.Texture:Hide()
-	end
-
 	local function reskinEditBox(editFrame)
 		editFrame:SetWidth(393)
 		editFrame.background:SetTemplate("Transparent")
@@ -697,26 +723,7 @@ MountsJournalConfigClasses:HookScript("OnShow", function(self)
 		S:HandleButton(editFrame.saveBtn)
 		editFrame.saveBtn:SetPoint("RIGHT", editFrame.cancelBtn, "LEFT", -1, 0)
 		editFrame.limitText:SetPoint("BOTTOMLEFT", editFrame.background, 10, -14)
-
-		editFrame.scrollBar.Background:Hide()
-		editFrame.scrollBar:StripTextures()
-
-		local track = editFrame.scrollBar.Track
-		track:SetTemplate("Transparent")
-		track:ClearAllPoints()
-		track:SetPoint("TOPLEFT", 4, -21)
-		track:SetPoint("BOTTOMRIGHT", -3, 21)
-
-		local thumb = track.Thumb
-		thumb.Middle:Hide()
-		thumb.Begin:Hide()
-		thumb.End:Hide()
-
-		thumb:SetTemplate(nil, true, true)
-		thumb:SetBackdropColor(unpack(E.media.rgbvaluecolor))
-
-		reskinScrollBarArrow(editFrame.scrollBar.Back, "up")
-		reskinScrollBarArrow(editFrame.scrollBar.Forward, "down")
+		reskinEditScrollBar(editFrame.scrollBar)
 	end
 
 	reskinEditBox(self.moveFallMF)
@@ -741,4 +748,86 @@ hooksecurefunc(MountsJournalConfigClasses, "showClassSettings", function(self)
 			option.isSkinned = true
 		end
 	end
+end)
+
+
+if not MountsJournalConfigRules then return end -- retail
+MountsJournalConfigRules:HookScript("OnShow", function(self)
+	S:HandleButton(self.addRuleBtn)
+	S:HandleButton(self.resetRulesBtn)
+	S:HandleTrimScrollBar(self.scrollBar)
+
+	self.ruleEditor:HookScript("OnShow", function(self)
+		self.menu:ddSetDisplayMode("ElvUI")
+
+		self.panel:StripTextures()
+		self.panel:SetTemplate("Transparent")
+
+		S:HandleTrimScrollBar(self.scrollBar)
+		S:HandleButton(self.cancel)
+		S:HandleButton(self.ok)
+
+		self.mountSelect:StripTextures()
+		self.mountSelect:SetTemplate("Transparent")
+		S:HandleCloseButton(self.mountSelect.close)
+
+		local onEnter = function(btn) btn.normal:SetVertexColor(unpack(E.media.rgbvaluecolor)) end
+		local onLeave = function(btn) btn.normal:SetVertexColor(1, 1, 1) end
+
+		local function dropDonwSkin(btn)
+			btn:StripTextures()
+			btn:CreateBackdrop()
+			btn.backdrop:Point("TOPLEFT", 0, -5)
+			btn.backdrop:Point("BOTTOMRIGHT", 0, 5)
+			btn:SetNormalTexture(E.Media.Textures.ArrowUp)
+			btn:SetPushedTexture(E.Media.Textures.ArrowUp)
+
+			local rotation = S.ArrowRotation.down
+			btn.normal = btn:GetNormalTexture()
+			btn.normal:SetRotation(rotation)
+			btn:GetPushedTexture():SetRotation(rotation)
+
+			btn:HookScript("OnEnter", onEnter)
+			btn:HookScript("OnLeave", onLeave)
+		end
+
+		local function scrollButtons(frame)
+			if not frame then return end
+			for i, panel in ipairs({frame.ScrollTarget:GetChildren()}) do
+				if not panel.isSkinned then
+					panel.isSkinned = true
+					S:HandleCheckBox(panel.notCheck)
+					dropDonwSkin(panel.optionType)
+				end
+			end
+		end
+		hooksecurefunc(self.scrollBox, "Update", scrollButtons)
+
+		dropDonwSkin(self.actionPanel.optionType)
+		local macro = self.actionPanel.macro
+		macro:SetTemplate("Transparent")
+		reskinEditScrollBar(macro.scrollBar)
+
+		local function onAcqure()
+			for btn in self.btnPool:EnumerateActive() do
+				if not btn.isSkinned then
+					btn.isSkinned = true
+					dropDonwSkin(btn)
+				end
+			end
+			for edit in self.editPool:EnumerateActive() do
+				if not edit.isSkinned then
+					edit.isSkinned = true
+					edit.border:Hide()
+					edit:ClearBackdrop()
+					edit:CreateBackdrop()
+					edit.backdrop:Point("TOPLEFT", 0, -5)
+					edit.backdrop:Point("BOTTOMRIGHT", 0, 5)
+				end
+			end
+		end
+
+		hooksecurefunc(self, "setCondValueOption", onAcqure)
+		hooksecurefunc(self, "setActionValueOption", onAcqure)
+	end)
 end)
