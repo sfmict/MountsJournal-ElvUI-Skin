@@ -550,7 +550,8 @@ end)
 
 -- SUMMON PANEL
 if MountsJournalFrame.summonPanel then -- retail
-	hooksecurefunc(MountsJournalConfig, "PLAYER_LOGIN", function()
+	MountsJournal:on("CREATE_BUTTONS", function()
+	-- hooksecurefunc(MountsJournalConfig, "PLAYER_LOGIN", function()
 		local summonPanel = MountsJournalFrame.summonPanel
 		summonPanel:StripTextures()
 		summonPanel:CreateBackdrop("Transparent")
@@ -751,7 +752,6 @@ hooksecurefunc(MountsJournalConfigClasses, "showClassSettings", function(self)
 end)
 
 
-if not MountsJournalConfigRules then return end -- retail
 MountsJournalConfigRules:HookScript("OnShow", function(self)
 	S:HandleButton(self.addRuleBtn)
 	S:HandleButton(self.resetRulesBtn)
