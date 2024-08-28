@@ -551,7 +551,6 @@ end)
 -- SUMMON PANEL
 if MountsJournalFrame.summonPanel then -- retail
 	MountsJournal:on("CREATE_BUTTONS", function()
-	-- hooksecurefunc(MountsJournalConfig, "PLAYER_LOGIN", function()
 		local summonPanel = MountsJournalFrame.summonPanel
 		summonPanel:StripTextures()
 		summonPanel:CreateBackdrop("Transparent")
