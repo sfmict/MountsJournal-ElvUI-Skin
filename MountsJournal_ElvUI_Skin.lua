@@ -552,19 +552,22 @@ end)
 if MountsJournalFrame.summonPanel then -- retail
 	MountsJournal:on("CREATE_BUTTONS", function()
 		local summonPanel = MountsJournalFrame.summonPanel
-		summonPanel:StripTextures()
-		summonPanel:CreateBackdrop("Transparent")
 
-		summonPanel.resize:HookScript("OnHide", function(self)
-			self:GetParent().backdrop:Hide()
-		end)
-		summonPanel.resize:HookScript("OnShow", function(self)
-			self:GetParent().backdrop:Show()
-		end)
-		summonPanel.backdrop:SetShown(summonPanel.resize:IsShown())
+		local function skinButton(btn)
+			if btn.isSkinned then return end
+			btn.isSkinned = true
+			local texture = btn.icon:GetTexture()
+			btn:StripTextures()
+			btn.icon:SetTexCoord(unpack(E.TexCoords))
+			btn.IconMask:Hide()
+			btn:CreateBackdrop(nil, true, nil, nil, nil, nil, nil, true)
+			btn:StyleButton()
+			btn.icon:SetInside(btn)
+			btn.icon:SetTexture(texture)
+		end
 
-		S:HandleItemButton(summonPanel.summon1)
-		S:HandleItemButton(summonPanel.summon2)
+		skinButton(summonPanel.summon1)
+		skinButton(summonPanel.summon2)
 	end)
 end
 
