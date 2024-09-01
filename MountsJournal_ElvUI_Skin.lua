@@ -358,6 +358,14 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 	S:HandleItemButton(bgFrame.summon1)
 	S:HandleItemButton(bgFrame.summon2)
 
+	if bgFrame.summonPanelSettings then -- retail
+		bgFrame.summonPanelSettings:ddSetDisplayMode("ElvUI")
+		S:HandleSliderFrame(journal.summonPanel.fade.slider)
+		journal.summonPanel.fade.slider:SetPoint("BOTTOMLEFT", 0, 3)
+		S:HandleSliderFrame(journal.summonPanel.resize.slider)
+		journal.summonPanel.resize.slider:SetPoint("BOTTOMLEFT", 0, 3)
+	end
+
 	journal.filtersPanel:StripTextures()
 	S:HandleButton(journal.filtersToggle)
 	journal.filtersToggle:SetSize(22, 22)
