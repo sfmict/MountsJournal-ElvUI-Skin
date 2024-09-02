@@ -392,7 +392,7 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 	for i, tab in ipairs(journal.filtersBar.tabs) do
 		tab:StripTextures()
 		tab.selected:StripTextures()
-		S:HandleTab(tab.selected)
+		S:HandleTab(tab)
 		tab:HookScript("OnEnter", tabOnEnter)
 		tab:HookScript("OnLeave", tabOnLeave)
 
