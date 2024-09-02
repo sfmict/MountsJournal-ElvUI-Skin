@@ -392,7 +392,9 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 	for i, tab in ipairs(journal.filtersBar.tabs) do
 		tab:StripTextures()
 		tab.selected:StripTextures()
-		S:HandleTab(tab.selected)
+		tab.selected:CreateBackdrop()
+		tab.selected.backdrop:Point('TOPLEFT', 3, -3)
+		tab.selected.backdrop:Point('BOTTOMRIGHT', -3, 3)
 		tab:HookScript("OnEnter", tabOnEnter)
 		tab:HookScript("OnLeave", tabOnLeave)
 
