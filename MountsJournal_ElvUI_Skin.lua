@@ -765,6 +765,7 @@ end)
 
 
 MountsJournalConfigRules:HookScript("OnShow", function(self)
+	self.ruleSets:ddSetDisplayMode("ElvUI")
 	S:HandleButton(self.addRuleBtn)
 	S:HandleButton(self.resetRulesBtn)
 	S:HandleTrimScrollBar(self.scrollBar)
