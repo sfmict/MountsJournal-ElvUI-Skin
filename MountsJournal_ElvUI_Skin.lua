@@ -5,7 +5,10 @@ local S = E:GetModule("Skins")
 
 MJTooltipModel:StripTextures()
 MJTooltipModel:CreateBackdrop("Transparent")
-MJTooltipModel:SetPoint("TOPLEFT", GameTooltip, "BOTTOMLEFT", 0, -2)
+MJTooltipModel:HookScript("OnShow", function(self)
+	local point, rFrame, rPoint, x, y = self:GetPoint()
+	self:Point(point, rFrame, rPoint, -x, -y)
+end)
 
 
 hooksecurefunc(MountsJournalFrame, "ADDON_LOADED", function(journal)
