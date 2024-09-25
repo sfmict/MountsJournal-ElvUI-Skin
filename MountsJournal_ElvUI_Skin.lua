@@ -275,15 +275,16 @@ local function scrollMountButtons(frame)
 end
 
 
+local function ddStreachButton(btn)
+	btn.Arrow:SetTexture(E.Media.Textures.ArrowUp)
+	btn.Arrow:SetRotation(S.ArrowRotation.right)
+	btn.Arrow:SetVertexColor(1, 1, 1)
+	S:HandleButton(btn)
+end
+
+
 -- JOURNAL
 hooksecurefunc(MountsJournalFrame, "init", function(journal)
-	local function ddStreachButton(btn)
-		btn.Arrow:SetTexture(E.Media.Textures.ArrowUp)
-		btn.Arrow:SetRotation(S.ArrowRotation.right)
-		btn.Arrow:SetVertexColor(1, 1, 1)
-		S:HandleButton(btn)
-	end
-
 	local function ddButton(btn)
 		btn:StripTextures()
 		btn:CreateBackdrop()
@@ -591,6 +592,9 @@ MountsJournalConfig:HookScript("OnShow", function(self)
 	self.leftPanel:SetTemplate("Transparent")
 
 	S:HandleCheckBox(self.waterJump)
+	if self.summon1Icon then -- retail
+		S:HandleItemButton(self.summon1Icon)
+	end
 	if self.createMacroBtn then -- classic
 		S:HandleButton(self.createMacroBtn)
 	end
@@ -600,6 +604,9 @@ MountsJournalConfig:HookScript("OnShow", function(self)
 	bindSummon1.selectedHighlight:Point("BOTTOMRIGHT", -1, 1)
 	bindSummon1.selectedHighlight:SetColorTexture(1, 1, 1, .25)
 	S:HandleButton(bindSummon1)
+	if self.summon2Icon then -- retail
+		S:HandleItemButton(self.summon2Icon)
+	end
 	if self.createSecondMacroBtn then -- classic
 		S:HandleButton(self.createSecondMacroBtn)
 	end
@@ -667,6 +674,45 @@ MountsJournalConfig:HookScript("OnShow", function(self)
 	S:HandleButton(self.applyBtn)
 	S:HandleButton(self.cancelBtn)
 end)
+
+
+-- IconData
+if MountsJournalConfig.iconData then -- retail
+	MountsJournalConfig.iconData:HookScript("OnShow", function(self)
+		self:StripTextures()
+		self:SetTemplate("Transparent")
+
+		S:HandleItemButton(self.selectedIconBtn)
+		S:HandleEditBox(self.searchBox)
+		self.searchBox:SetPoint("TOPLEFT", 18, -27)
+		ddStreachButton(self.filtersButton)
+		self.filtersButton:SetPoint("LEFT", self.searchBox, "RIGHT", 2, 0)
+		self.filtersButton:ddSetDisplayMode("ElvUI")
+		S:HandleTrimScrollBar(self.scrollBar)
+		S:HandleButton(self.cancel)
+		S:HandleButton(self.ok)
+
+		local function selectedTextureSetShown(texture, shown)
+			local btn = texture:GetParent()
+			if shown then
+				btn.backdrop:SetBackdropBorderColor(1, .8, .1)
+			else
+				btn.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
+			end
+		end
+
+		hooksecurefunc(self.scrollBox, "Update", function(frame)
+			for i, btn in ipairs({frame.ScrollTarget:GetChildren()}) do
+				if not btn.isSkinned then
+					S:HandleItemButton(btn)
+					hooksecurefunc(btn.selectedTexture, "SetShown", selectedTextureSetShown)
+					selectedTextureSetShown(btn.selectedTexture, btn.selectedTexture:IsShown())
+					btn.isSkinned = true
+				end
+			end
+		end)
+	end)
+end
 
 
 local function reskinScrollBarArrow(frame, direction)
