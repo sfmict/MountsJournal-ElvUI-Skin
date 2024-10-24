@@ -715,6 +715,7 @@ if MountsJournalConfig.iconData then -- retail
 end
 
 
+-- CLASSES
 local function reskinScrollBarArrow(frame, direction)
 	S:HandleNextPrevButton(frame, direction)
 	frame.Overlay:SetAlpha(0)
@@ -813,6 +814,7 @@ hooksecurefunc(MountsJournalConfigClasses, "showClassSettings", function(self)
 end)
 
 
+-- RULES
 MountsJournalConfigRules:HookScript("OnShow", function(self)
 	self.ruleSets:ddSetDisplayMode("ElvUI")
 	S:HandleButton(self.addRuleBtn)
