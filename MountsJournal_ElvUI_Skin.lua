@@ -362,13 +362,11 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 	S:HandleItemButton(bgFrame.summon1)
 	S:HandleItemButton(bgFrame.summon2)
 
-	if bgFrame.summonPanelSettings then -- retail
-		bgFrame.summonPanelSettings:ddSetDisplayMode("ElvUI")
-		S:HandleSliderFrame(journal.summonPanel.fade.slider)
-		journal.summonPanel.fade.slider:SetPoint("BOTTOMLEFT", 0, 3)
-		S:HandleSliderFrame(journal.summonPanel.resize.slider)
-		journal.summonPanel.resize.slider:SetPoint("BOTTOMLEFT", 0, 3)
-	end
+	bgFrame.summonPanelSettings:ddSetDisplayMode("ElvUI")
+	S:HandleSliderFrame(journal.summonPanel.fade.slider)
+	journal.summonPanel.fade.slider:SetPoint("BOTTOMLEFT", 0, 3)
+	S:HandleSliderFrame(journal.summonPanel.resize.slider)
+	journal.summonPanel.resize.slider:SetPoint("BOTTOMLEFT", 0, 3)
 
 	journal.filtersPanel:StripTextures()
 	S:HandleButton(journal.filtersToggle)
@@ -518,9 +516,6 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 	S:HandleButton(mapSettings.existingListsToggle)
 	mapSettings.existingListsToggle:SetPoint("TOPRIGHT", mapSettings.mapControl, 0, -3)
 	S:HandleCheckBox(mapSettings.Flags)
-	if mapSettings.Fly then -- retail
-		S:HandleCheckBox(mapSettings.Fly)
-	end
 	S:HandleCheckBox(mapSettings.Ground)
 	S:HandleCheckBox(mapSettings.WaterWalk)
 	if mapSettings.HerbGathering then -- retail
@@ -563,27 +558,27 @@ end)
 
 
 -- SUMMON PANEL
-if MountsJournalFrame.summonPanel then -- retail
-	MountsJournal:on("CREATE_BUTTONS", function()
-		local summonPanel = MountsJournalFrame.summonPanel
+MountsJournal:on("CREATE_BUTTONS", function()
+	local summonPanel = MountsJournalFrame.summonPanel
 
-		local function skinButton(btn)
-			if btn.isSkinned then return end
-			btn.isSkinned = true
-			local texture = btn.icon:GetTexture()
-			btn:StripTextures()
-			btn.icon:SetTexCoord(unpack(E.TexCoords))
+	local function skinButton(btn)
+		if btn.isSkinned then return end
+		btn.isSkinned = true
+		local texture = btn.icon:GetTexture()
+		btn:StripTextures()
+		btn.icon:SetTexCoord(unpack(E.TexCoords))
+		if btn.IconMask then -- retail
 			btn.IconMask:Hide()
-			btn:CreateBackdrop(nil, true, nil, nil, nil, nil, nil, true)
-			btn:StyleButton()
-			btn.icon:SetInside(btn)
-			btn.icon:SetTexture(texture)
 		end
+		btn:CreateBackdrop(nil, true, nil, nil, nil, nil, nil, true)
+		btn:StyleButton()
+		btn.icon:SetInside(btn)
+		btn.icon:SetTexture(texture)
+	end
 
-		skinButton(summonPanel.summon1)
-		skinButton(summonPanel.summon2)
-	end)
-end
+	skinButton(summonPanel.summon1)
+	skinButton(summonPanel.summon2)
+end)
 
 
 -- OPTIONS
@@ -592,30 +587,18 @@ MountsJournalConfig:HookScript("OnShow", function(self)
 	self.leftPanel:SetTemplate("Transparent")
 
 	S:HandleCheckBox(self.waterJump)
-	if self.summon1Icon then -- retail
-		S:HandleItemButton(self.summon1Icon)
-	end
-	if self.createMacroBtn then -- classic
-		S:HandleButton(self.createMacroBtn)
-	end
-	local bindSummon1 = self.bindMount or self.bindSummon1
-	bindSummon1.selectedHighlight:SetTexture(E.media.normTex)
-	bindSummon1.selectedHighlight:Point("TOPLEFT", 1, -1)
-	bindSummon1.selectedHighlight:Point("BOTTOMRIGHT", -1, 1)
-	bindSummon1.selectedHighlight:SetColorTexture(1, 1, 1, .25)
-	S:HandleButton(bindSummon1)
-	if self.summon2Icon then -- retail
-		S:HandleItemButton(self.summon2Icon)
-	end
-	if self.createSecondMacroBtn then -- classic
-		S:HandleButton(self.createSecondMacroBtn)
-	end
-	local bindSummon2 = self.bindSecondMount or self.bindSummon2
-	bindSummon2.selectedHighlight:SetTexture(E.media.normTex)
-	bindSummon2.selectedHighlight:Point("TOPLEFT", 1, -1)
-	bindSummon2.selectedHighlight:Point("BOTTOMRIGHT", -1, 1)
-	bindSummon2.selectedHighlight:SetColorTexture(1, 1, 1, .25)
-	S:HandleButton(bindSummon2)
+	S:HandleItemButton(self.summon1Icon)
+	self.bindSummon1.selectedHighlight:SetTexture(E.media.normTex)
+	self.bindSummon1.selectedHighlight:Point("TOPLEFT", 1, -1)
+	self.bindSummon1.selectedHighlight:Point("BOTTOMRIGHT", -1, 1)
+	self.bindSummon1.selectedHighlight:SetColorTexture(1, 1, 1, .25)
+	S:HandleButton(self.bindSummon1)
+	S:HandleItemButton(self.summon2Icon)
+	self.bindSummon2.selectedHighlight:SetTexture(E.media.normTex)
+	self.bindSummon2.selectedHighlight:Point("TOPLEFT", 1, -1)
+	self.bindSummon2.selectedHighlight:Point("BOTTOMRIGHT", -1, 1)
+	self.bindSummon2.selectedHighlight:SetColorTexture(1, 1, 1, .25)
+	S:HandleButton(self.bindSummon2)
 
 	self.rightPanel:StripTextures()
 	self.rightPanel:SetTemplate("Transparent")
@@ -677,42 +660,40 @@ end)
 
 
 -- IconData
-if MountsJournalConfig.iconData then -- retail
-	MountsJournalConfig.iconData:HookScript("OnShow", function(self)
-		self:StripTextures()
-		self:SetTemplate("Transparent")
+MountsJournalConfig.iconData:HookScript("OnShow", function(self)
+	self:StripTextures()
+	self:SetTemplate("Transparent")
 
-		S:HandleItemButton(self.selectedIconBtn)
-		S:HandleEditBox(self.searchBox)
-		self.searchBox:SetPoint("TOPLEFT", 18, -27)
-		ddStreachButton(self.filtersButton)
-		self.filtersButton:SetPoint("LEFT", self.searchBox, "RIGHT", 2, 0)
-		self.filtersButton:ddSetDisplayMode("ElvUI")
-		S:HandleTrimScrollBar(self.scrollBar)
-		S:HandleButton(self.cancel)
-		S:HandleButton(self.ok)
+	S:HandleItemButton(self.selectedIconBtn)
+	S:HandleEditBox(self.searchBox)
+	self.searchBox:SetPoint("TOPLEFT", 18, -27)
+	ddStreachButton(self.filtersButton)
+	self.filtersButton:SetPoint("LEFT", self.searchBox, "RIGHT", 2, 0)
+	self.filtersButton:ddSetDisplayMode("ElvUI")
+	S:HandleTrimScrollBar(self.scrollBar)
+	S:HandleButton(self.cancel)
+	S:HandleButton(self.ok)
 
-		local function selectedTextureSetShown(texture, shown)
-			local btn = texture:GetParent()
-			if shown then
-				btn.backdrop:SetBackdropBorderColor(1, .8, .1)
-			else
-				btn.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
+	local function selectedTextureSetShown(texture, shown)
+		local btn = texture:GetParent()
+		if shown then
+			btn.backdrop:SetBackdropBorderColor(1, .8, .1)
+		else
+			btn.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
+		end
+	end
+
+	hooksecurefunc(self.scrollBox, "Update", function(frame)
+		for i, btn in ipairs({frame.ScrollTarget:GetChildren()}) do
+			if not btn.isSkinned then
+				S:HandleItemButton(btn)
+				hooksecurefunc(btn.selectedTexture, "SetShown", selectedTextureSetShown)
+				selectedTextureSetShown(btn.selectedTexture, btn.selectedTexture:IsShown())
+				btn.isSkinned = true
 			end
 		end
-
-		hooksecurefunc(self.scrollBox, "Update", function(frame)
-			for i, btn in ipairs({frame.ScrollTarget:GetChildren()}) do
-				if not btn.isSkinned then
-					S:HandleItemButton(btn)
-					hooksecurefunc(btn.selectedTexture, "SetShown", selectedTextureSetShown)
-					selectedTextureSetShown(btn.selectedTexture, btn.selectedTexture:IsShown())
-					btn.isSkinned = true
-				end
-			end
-		end)
 	end)
-end
+end)
 
 
 -- CLASSES
