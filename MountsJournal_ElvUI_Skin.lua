@@ -588,17 +588,25 @@ MountsJournalConfig:HookScript("OnShow", function(self)
 
 	S:HandleCheckBox(self.waterJump)
 	S:HandleItemButton(self.summon1Icon)
-	self.bindSummon1.selectedHighlight:SetTexture(E.media.normTex)
-	self.bindSummon1.selectedHighlight:Point("TOPLEFT", 1, -1)
-	self.bindSummon1.selectedHighlight:Point("BOTTOMRIGHT", -1, 1)
-	self.bindSummon1.selectedHighlight:SetColorTexture(1, 1, 1, .25)
-	S:HandleButton(self.bindSummon1)
 	S:HandleItemButton(self.summon2Icon)
-	self.bindSummon2.selectedHighlight:SetTexture(E.media.normTex)
-	self.bindSummon2.selectedHighlight:Point("TOPLEFT", 1, -1)
-	self.bindSummon2.selectedHighlight:Point("BOTTOMRIGHT", -1, 1)
-	self.bindSummon2.selectedHighlight:SetColorTexture(1, 1, 1, .25)
-	S:HandleButton(self.bindSummon2)
+
+	local function updateBindButton(btn)
+		btn.selectedHighlight:SetTexture(E.media.normTex)
+		btn.selectedHighlight:Point("TOPLEFT", 1, -1)
+		btn.selectedHighlight:Point("BOTTOMRIGHT", -1, 1)
+		btn.selectedHighlight:SetColorTexture(1, 1, 1, .25)
+		S:HandleButton(btn)
+	end
+
+	if self.bindSummon1 then -- classic
+		updateBindButton(self.bindSummon1)
+		updateBindButton(self.bindSummon2)
+	else -- retail
+		updateBindButton(self.bindSummon1Key1)
+		updateBindButton(self.bindSummon1Key2)
+		updateBindButton(self.bindSummon2Key1)
+		updateBindButton(self.bindSummon2Key2)
+	end
 
 	self.rightPanel:StripTextures()
 	self.rightPanel:SetTemplate("Transparent")
