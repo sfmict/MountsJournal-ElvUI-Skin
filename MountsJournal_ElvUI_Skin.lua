@@ -275,7 +275,42 @@ local function scrollMountButtons(frame)
 end
 
 
+local function ddButton(btn)
+	btn:ddSetDisplayMode("ElvUI")
+	if btn.isSkinned then return end
+	if btn.Button then -- classic
+		btn.Left:SetTexture()
+		btn.Right:SetTexture()
+		btn.Middle:SetTexture()
+		btn:StripTextures()
+		btn:CreateBackdrop()
+		btn:SetFrameLevel(btn:GetFrameLevel() + 2)
+		btn.backdrop:Point("TOPLEFT", 3, 1)
+		btn.backdrop:Point("BOTTOMRIGHT", 1, 2)
+		btn.Button.SetPoint = E.noop
+		S:HandleNextPrevButton(btn.Button, "down")
+	else -- retail
+		btn.Background:SetTexture()
+		if not btn.backdrop then
+			btn:CreateBackdrop(template)
+			btn:SetFrameLevel(btn:GetFrameLevel() + 2)
+		end
+		btn.backdrop:Point("TOPLEFT", 0, -2)
+		btn.backdrop:Point("BOTTOMRIGHT", 0, 2)
+		btn.Arrow:SetAlpha(0)
+		local tex = btn:CreateTexture(nil, "ARTWORK")
+		tex:SetTexture(E.Media.Textures.ArrowUp)
+		tex:SetRotation(3.14)
+		tex:Point('RIGHT', btn.backdrop, -3, 0)
+		tex:Size(14)
+	end
+	btn.isSkinned = true
+end
+
+
 local function ddStreachButton(btn)
+	btn:ddSetDisplayMode("ElvUI")
+	if btn.isSkinned then return end
 	btn.Arrow:SetTexture(E.Media.Textures.ArrowUp)
 	btn.Arrow:SetRotation(S.ArrowRotation.right)
 	btn.Arrow:SetVertexColor(1, 1, 1)
@@ -285,16 +320,6 @@ end
 
 -- JOURNAL
 hooksecurefunc(MountsJournalFrame, "init", function(journal)
-	local function ddButton(btn)
-		btn:StripTextures()
-		btn:CreateBackdrop()
-		btn:SetFrameLevel(btn:GetFrameLevel() + 2)
-		btn.backdrop:Point("TOPLEFT", 3, 1)
-		btn.backdrop:Point("BOTTOMRIGHT", 1, 2)
-		btn.Button.SetPoint = E.noop
-		S:HandleNextPrevButton(btn.Button, "down")
-	end
-
 	local bgFrame = journal.bgFrame
 	S:HandlePortraitFrame(bgFrame)
 	S:HandleCloseButton(bgFrame.closeButton)
@@ -379,7 +404,6 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 	journal.searchBox:SetPoint("TOPLEFT", 53, -5)
 	ddStreachButton(journal.filtersButton)
 	journal.filtersButton:SetPoint("LEFT", journal.searchBox, "RIGHT", 2, 0)
-	journal.filtersButton:ddSetDisplayMode("ElvUI")
 	journal.filtersBar:StripTextures()
 	journal.filtersBar:SetTemplate("Transparent")
 
@@ -509,7 +533,6 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 	ddStreachButton(mapSettings.dnr)
 	mapSettings.dnr:SetPoint("TOPLEFT", mapSettings.mapControl, "TOPLEFT", 0, -3)
 	mapSettings.dnr:SetPoint("RIGHT", mapSettings.CurrentMap, "LEFT", -1, 0)
-	mapSettings.dnr:ddSetDisplayMode("ElvUI")
 	S:HandleButton(mapSettings.CurrentMap)
 	mapSettings.CurrentMap:SetPoint("RIGHT", mapSettings.existingListsToggle, "LEFT", -1, 0)
 	mapSettings.CurrentMap:SetWidth(253)
@@ -522,7 +545,6 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 		S:HandleCheckBox(mapSettings.HerbGathering)
 	end
 	ddStreachButton(mapSettings.listFromMap)
-	mapSettings.listFromMap:ddSetDisplayMode("ElvUI")
 
 	mapSettings.existingLists:StripTextures()
 	mapSettings.existingLists:CreateBackdrop("Transparent")
@@ -537,7 +559,6 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 
 	S:HandleButton(journal.summonButton)
 	ddStreachButton(bgFrame.profilesMenu)
-	bgFrame.profilesMenu:ddSetDisplayMode("ElvUI")
 	S:HandleButton(journal.mountSpecial)
 
 	bgFrame.calendarFrame:StripTextures()
@@ -607,6 +628,7 @@ MountsJournalConfig:HookScript("OnShow", function(self)
 		updateBindButton(self.bindSummon2Key1)
 		updateBindButton(self.bindSummon2Key2)
 	end
+	ddButton(self.modifierCombobox)
 
 	self.rightPanel:StripTextures()
 	self.rightPanel:SetTemplate("Transparent")
@@ -631,12 +653,14 @@ MountsJournalConfig:HookScript("OnShow", function(self)
 	S:HandleCheckBox(self.useRepairMounts)
 	S:HandleCheckBox(self.repairFlyable)
 	S:HandleCheckBox(self.freeSlots)
+	ddButton(self.repairMountsCombobox)
 
 	if self.magicBroomGroup then -- retail
 		self.magicBroomGroup:StripTextures()
 		self.magicBroomGroup:SetTemplate(nil, true)
 	end
 	S:HandleCheckBox(self.useMagicBroom)
+	ddButton(self.magicBroomCombobox)
 
 	if self.useUnderlightAngler then
 		self.underlightAnglerGroup:StripTextures()
@@ -677,7 +701,6 @@ MountsJournalConfig.iconData:HookScript("OnShow", function(self)
 	self.searchBox:SetPoint("TOPLEFT", 18, -27)
 	ddStreachButton(self.filtersButton)
 	self.filtersButton:SetPoint("LEFT", self.searchBox, "RIGHT", 2, 0)
-	self.filtersButton:ddSetDisplayMode("ElvUI")
 	S:HandleTrimScrollBar(self.scrollBar)
 	S:HandleButton(self.cancel)
 	S:HandleButton(self.ok)
@@ -805,7 +828,8 @@ end)
 
 -- RULES
 MountsJournalConfigRules:HookScript("OnShow", function(self)
-	self.ruleSets:ddSetDisplayMode("ElvUI")
+	ddStreachButton(self.ruleSets)
+	ddButton(self.summons)
 	S:HandleButton(self.addRuleBtn)
 	S:HandleButton(self.resetRulesBtn)
 	S:HandleTrimScrollBar(self.scrollBar)
@@ -824,24 +848,44 @@ MountsJournalConfigRules:HookScript("OnShow", function(self)
 		self.mountSelect:SetTemplate("Transparent")
 		S:HandleCloseButton(self.mountSelect.close)
 
-		local onEnter = function(btn) btn.normal:SetVertexColor(unpack(E.media.rgbvaluecolor)) end
-		local onLeave = function(btn) btn.normal:SetVertexColor(1, 1, 1) end
+		local onEnter = function(btn)
+			btn.normal:SetTexture(E.Media.Textures.ArrowUp)
+			btn.normal:SetVertexColor(unpack(E.media.rgbvaluecolor))
+		end
+		local onLeave = function(btn)
+			btn.normal:SetTexture(E.Media.Textures.ArrowUp)
+			btn.normal:SetVertexColor(1, 1, 1)
+		end
 
 		local function dropDonwSkin(btn)
 			btn:StripTextures()
 			btn:CreateBackdrop()
 			btn.backdrop:Point("TOPLEFT", 0, -5)
 			btn.backdrop:Point("BOTTOMRIGHT", 0, 5)
-			btn:SetNormalTexture(E.Media.Textures.ArrowUp)
-			btn:SetPushedTexture(E.Media.Textures.ArrowUp)
 
-			local rotation = S.ArrowRotation.down
-			btn.normal = btn:GetNormalTexture()
-			btn.normal:SetRotation(rotation)
-			btn:GetPushedTexture():SetRotation(rotation)
+			if btn.arrow then -- retail
+				btn.arrow:SetTexture(E.Media.Textures.ArrowUp)
+				btn.arrow:SetRotation(S.ArrowRotation.down)
+				btn.arrow:SetPoint("RIGHT", -4, 0)
+				btn.normal = btn.arrow
 
-			btn:HookScript("OnEnter", onEnter)
-			btn:HookScript("OnLeave", onLeave)
+				btn:SetScript("OnMouseDown", nil)
+				btn:SetScript("OnMouseUp", nil)
+				btn:HookScript("OnEnter", onEnter)
+				btn:HookScript("OnLeave", onLeave)
+			else -- classic
+				btn:SetNormalTexture(E.Media.Textures.ArrowUp)
+				btn:SetPushedTexture(E.Media.Textures.ArrowUp)
+
+				local rotation = S.ArrowRotation.down
+				btn.normal = btn:GetNormalTexture()
+				btn.normal:SetRotation(rotation)
+				btn:GetPushedTexture():SetRotation(rotation)
+
+				btn:HookScript("OnEnter", onEnter)
+				btn:HookScript("OnLeave", onLeave)
+			end
+
 		end
 
 		local function scrollButtons(frame)
