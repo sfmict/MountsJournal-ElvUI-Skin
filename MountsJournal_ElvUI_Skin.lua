@@ -660,7 +660,10 @@ MountsJournalConfig:HookScript("OnShow", function(self)
 		self.magicBroomGroup:SetTemplate(nil, true)
 	end
 	S:HandleCheckBox(self.useMagicBroom)
-	ddButton(self.magicBroomCombobox)
+
+	if self.magicBroomCombobox then -- retail
+		ddButton(self.magicBroomCombobox)
+	end
 
 	if self.useUnderlightAngler then
 		self.underlightAnglerGroup:StripTextures()
@@ -829,8 +832,14 @@ end)
 -- RULES
 MountsJournalConfigRules:HookScript("OnShow", function(self)
 	ddStreachButton(self.ruleSets)
+	if self.snippetToggle then -- retail
+		S:HandleButton(self.snippetToggle)
+	end
 	ddButton(self.summons)
 	S:HandleButton(self.addRuleBtn)
+	if self.searchBox then -- retail
+		S:HandleEditBox(self.searchBox)
+	end
 	S:HandleButton(self.resetRulesBtn)
 	S:HandleTrimScrollBar(self.scrollBar)
 
@@ -927,4 +936,38 @@ MountsJournalConfigRules:HookScript("OnShow", function(self)
 		hooksecurefunc(self, "setCondValueOption", onAcqure)
 		hooksecurefunc(self, "setActionValueOption", onAcqure)
 	end)
+end)
+
+
+if not MountsJournalSnippets then return end -- retail
+-- SNIPPETS
+MountsJournalSnippets:HookScript("OnShow", function(self)
+	self:SetPoint("TOPLEFT", MountsJournalFrame.bgFrame, "TOPRIGHT", 1, 0)
+	self:SetPoint("BOTTOMLEFT", MountsJournalFrame.bgFrame, "BOTTOMRIGHT", 1, 0)
+	self:StripTextures()
+	self:SetTemplate("Transparent")
+
+	S:HandleButton(self.addSnipBtn)
+	self.addSnipBtn:SetPoint("RIGHT", -4, 0)
+
+	S:HandleEditBox(self.searchBox)
+	self.searchBox:SetPoint("LEFT", 10, 0)
+	self.searchBox:SetPoint("RIGHT", -4, 0)
+
+	self.bg:StripTextures()
+	S:HandleTrimScrollBar(self.scrollBar)
+end)
+
+
+MountsJournalCodeEdit:HookScript("OnShow", function(self)
+	self:StripTextures()
+	self:SetTemplate("Transparent")
+	S:HandleEditBox(self.nameEdit)
+	S:HandleEditBox(self.line)
+	ddStreachButton(self.settings)
+	S:HandleButton(self.cancelBtn)
+	S:HandleButton(self.completeBtn)
+
+	self.codeBtn:SetTemplate("Transparent")
+	reskinEditScrollBar(self.scrollBar)
 end)
