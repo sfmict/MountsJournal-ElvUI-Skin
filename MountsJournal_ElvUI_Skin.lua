@@ -513,11 +513,9 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 		self:SetScript("OnClick", petSelectionClick)
 	end)
 
+	journal.mountDisplay.info.modelSceneSettingsButton:ddSetDisplayMode("ElvUI")
 	if journal.multipleMountBtn then -- retail
-		journal.mountDisplay.info.modelSceneSettingsButton:ddSetDisplayMode("ElvUI")
 		journal.multipleMountBtn:ddSetDisplayMode("ElvUI")
-	else -- classic
-		journal.mountDisplay.modelSceneSettingsButton:ddSetDisplayMode("ElvUI")
 	end
 	ddButton(journal.modelScene.animationsCombobox)
 	journal.modelScene.animationsCombobox:SetPoint("LEFT", journal.modelScene.modelControl, "RIGHT", 10, -2)
@@ -619,15 +617,10 @@ MountsJournalConfig:HookScript("OnShow", function(self)
 		S:HandleButton(btn)
 	end
 
-	if self.bindSummon1 then -- classic
-		updateBindButton(self.bindSummon1)
-		updateBindButton(self.bindSummon2)
-	else -- retail
-		updateBindButton(self.bindSummon1Key1)
-		updateBindButton(self.bindSummon1Key2)
-		updateBindButton(self.bindSummon2Key1)
-		updateBindButton(self.bindSummon2Key2)
-	end
+	updateBindButton(self.bindSummon1Key1)
+	updateBindButton(self.bindSummon1Key2)
+	updateBindButton(self.bindSummon2Key1)
+	updateBindButton(self.bindSummon2Key2)
 	ddButton(self.modifierCombobox)
 
 	self.rightPanel:StripTextures()
@@ -832,14 +825,10 @@ end)
 -- RULES
 MountsJournalConfigRules:HookScript("OnShow", function(self)
 	ddStreachButton(self.ruleSets)
-	if self.snippetToggle then -- retail
-		S:HandleButton(self.snippetToggle)
-	end
+	S:HandleButton(self.snippetToggle)
 	ddButton(self.summons)
 	S:HandleButton(self.addRuleBtn)
-	if self.searchBox then -- retail
-		S:HandleEditBox(self.searchBox)
-	end
+	S:HandleEditBox(self.searchBox)
 	S:HandleButton(self.resetRulesBtn)
 	S:HandleTrimScrollBar(self.scrollBar)
 
@@ -939,13 +928,15 @@ MountsJournalConfigRules:HookScript("OnShow", function(self)
 end)
 
 
-if not MountsJournalSnippets then return end -- retail
 -- SNIPPETS
 MountsJournalSnippets:HookScript("OnShow", function(self)
 	self:SetPoint("TOPLEFT", MountsJournalFrame.bgFrame, "TOPRIGHT", 1, 0)
 	self:SetPoint("BOTTOMLEFT", MountsJournalFrame.bgFrame, "BOTTOMRIGHT", 1, 0)
 	self:StripTextures()
 	self:SetTemplate("Transparent")
+	if self.TitleContainer.TitleBg then -- classic
+		self.TitleContainer.TitleBg:Hide()
+	end
 
 	S:HandleButton(self.addSnipBtn)
 	self.addSnipBtn:SetPoint("RIGHT", -4, 0)
