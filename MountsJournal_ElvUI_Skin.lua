@@ -370,9 +370,9 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 
 	if bgFrame.OpenDynamicFlightSkillTreeButton then -- retail
 		local function HandleDynamicFlightButton(button)
-			button:SetPushedTexture(0)
 			button:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
 			button:SetNormalTexture(0)
+			button:StyleButton()
 
 			local icon = select(4, button:GetRegions())
 			if icon then
@@ -382,10 +382,18 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 
 		HandleDynamicFlightButton(bgFrame.OpenDynamicFlightSkillTreeButton)
 		HandleDynamicFlightButton(bgFrame.DynamicFlightModeButton)
+		HandleDynamicFlightButton(bgFrame.targetMount)
+	else -- classic
+		S:HandleItemButton(bgFrame.targetMount)
+		bgFrame.targetMount.checkedTexture:SetInside()
+		bgFrame.targetMount.checkedTexture:SetColorTexture(.5, .9, .5, .3)
+		bgFrame.targetMount.icon:SetDrawLayer("OVERLAY")
 	end
 
 	S:HandleItemButton(bgFrame.summon1)
+	bgFrame.summon1.icon:SetDrawLayer("OVERLAY")
 	S:HandleItemButton(bgFrame.summon2)
+	bgFrame.summon2.icon:SetDrawLayer("OVERLAY")
 
 	bgFrame.summonPanelSettings:ddSetDisplayMode("ElvUI")
 	S:HandleSliderFrame(journal.summonPanel.fade.slider)
@@ -607,7 +615,9 @@ MountsJournalConfig:HookScript("OnShow", function(self)
 
 	S:HandleCheckBox(self.waterJump)
 	S:HandleItemButton(self.summon1Icon)
+	self.summon1Icon.icon:SetDrawLayer("OVERLAY")
 	S:HandleItemButton(self.summon2Icon)
+	self.summon2Icon.icon:SetDrawLayer("OVERLAY")
 
 	local function updateBindButton(btn)
 		btn.selectedHighlight:SetTexture(E.media.normTex)
@@ -693,6 +703,7 @@ MountsJournalConfig.iconData:HookScript("OnShow", function(self)
 	self:SetTemplate("Transparent")
 
 	S:HandleItemButton(self.selectedIconBtn)
+	self.selectedIconBtn.icon:SetDrawLayer("OVERLAY")
 	S:HandleEditBox(self.searchBox)
 	self.searchBox:SetPoint("TOPLEFT", 18, -27)
 	ddStreachButton(self.filtersButton)
@@ -714,6 +725,7 @@ MountsJournalConfig.iconData:HookScript("OnShow", function(self)
 		for i, btn in ipairs({frame.ScrollTarget:GetChildren()}) do
 			if not btn.isSkinned then
 				S:HandleItemButton(btn)
+				btn.icon:SetDrawLayer("OVERLAY")
 				hooksecurefunc(btn.selectedTexture, "SetShown", selectedTextureSetShown)
 				selectedTextureSetShown(btn.selectedTexture, btn.selectedTexture:IsShown())
 				btn.isSkinned = true
@@ -830,6 +842,7 @@ MountsJournalConfigRules:HookScript("OnShow", function(self)
 	S:HandleButton(self.addRuleBtn)
 	S:HandleEditBox(self.searchBox)
 	S:HandleButton(self.resetRulesBtn)
+	S:HandleCheckBox(self.altMode)
 	S:HandleTrimScrollBar(self.scrollBar)
 
 	self.ruleEditor:HookScript("OnShow", function(self)
