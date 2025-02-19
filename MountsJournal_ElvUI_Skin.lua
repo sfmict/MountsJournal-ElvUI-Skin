@@ -689,6 +689,8 @@ MountsJournalConfig:HookScript("OnShow", function(self)
 	S:HandleCheckBox(self.arrowButtons)
 	S:HandleCheckBox(self.openLinks)
 	S:HandleCheckBox(self.showWowheadLink)
+	S:HandleCheckBox(self.statisticCollection)
+	S:HandleCheckBox(self.tooltipMount)
 	if self.resetHelp then -- retail
 		S:HandleButton(self.resetHelp)
 	end
