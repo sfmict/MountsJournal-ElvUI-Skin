@@ -842,10 +842,12 @@ MountsJournalConfigRules:HookScript("OnShow", function(self)
 	S:HandleButton(self.snippetToggle)
 	ddButton(self.summons)
 	S:HandleButton(self.addRuleBtn)
+	S:HandleButton(self.importRuleBtn)
 	S:HandleEditBox(self.searchBox)
 	S:HandleButton(self.resetRulesBtn)
 	S:HandleCheckBox(self.altMode)
 	S:HandleTrimScrollBar(self.scrollBar)
+	self.ruleMenu:ddSetDisplayMode("ElvUI")
 
 	self.ruleEditor:HookScript("OnShow", function(self)
 		self.menu:ddSetDisplayMode("ElvUI")
@@ -955,6 +957,7 @@ MountsJournalSnippets:HookScript("OnShow", function(self)
 
 	S:HandleButton(self.addSnipBtn)
 	self.addSnipBtn:SetPoint("RIGHT", -4, 0)
+	S:HandleButton(self.importBtn)
 
 	S:HandleEditBox(self.searchBox)
 	self.searchBox:SetPoint("LEFT", 10, 0)
@@ -962,6 +965,8 @@ MountsJournalSnippets:HookScript("OnShow", function(self)
 
 	self.bg:StripTextures()
 	S:HandleTrimScrollBar(self.scrollBar)
+
+	self.snipMenu:ddSetDisplayMode("ElvUI")
 end)
 
 
@@ -980,4 +985,25 @@ MountsJournalCodeEdit:HookScript("OnShow", function(self)
 
 	self.codeBtn:SetTemplate("Transparent")
 	reskinEditScrollBar(self.scrollBar)
+end)
+
+
+MountsJournalDataDialog:HookScript("OnShow", function(self)
+	self:StripTextures()
+	self:SetTemplate("Transparent")
+	if self.TitleContainer.TitleBg then -- classic
+		self.TitleContainer.TitleBg:Hide()
+	end
+	S:HandleEditBox(self.nameEdit)
+	self.codeBtn:SetTemplate("Transparent")
+	reskinEditScrollBar(self.scrollBar)
+	S:HandleButton(self.btn1)
+	S:HandleButton(self.btn2)
+end)
+
+
+hooksecurefunc(MountsJournalDataDialog, "open", function(self)
+	if self.nameString:IsShown() then
+		self.codeBtn:SetPoint("TOPLEFT", self.nameString, "BOTTOMLEFT", -3, -7)
+	end
 end)
