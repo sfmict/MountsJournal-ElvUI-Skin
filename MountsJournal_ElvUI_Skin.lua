@@ -220,38 +220,38 @@ local function scrollMountButtons(frame)
 	for i, btn in ipairs({frame.ScrollTarget:GetChildren()}) do
 		if not btn.isSkinned then
 			if btn.mounts then
-				for i, g3btn in ipairs(btn.mounts) do
-					g3btn.icon:SetTexCoord(unpack(E.TexCoords))
-					g3btn.icon:CreateBackdrop(nil, nil, nil, true)
-					g3btn.highlight:SetTexture()
-					g3btn.selectedTexture:SetTexture()
+				for i, gbtn in ipairs(btn.mounts) do
+					gbtn.icon:ClearAllPoints()
+					gbtn.icon:Point("TOPLEFT", gbtn, 1, -1)
+					gbtn.icon:Point("BOTTOMRIGHT", gbtn, -1, 1)
+					gbtn.icon:SetTexCoord(unpack(E.TexCoords))
+					gbtn.icon:CreateBackdrop(nil, nil, nil, true)
+					gbtn.highlight:SetTexture()
+					gbtn.selectedTexture:SetTexture()
 
-					g3btn.fly:SetPoint("TOPLEFT", g3btn, "TOPRIGHT", 2, 0)
-					g3btn.ground:SetPoint("TOPLEFT", g3btn, "TOPRIGHT", 2, -14)
-					g3btn.swimming:SetPoint("TOPLEFT", g3btn, "TOPRIGHT", 2, -28)
+					gbtn:HookScript("OnEnter", gBtnOnEnter)
+					gbtn:HookScript("OnLeave", gBtnOnLeave)
+					hooksecurefunc(gbtn.selectedTexture, "SetShown", gSelectedTextureSetShown)
+					gSelectedTextureSetShown(gbtn.selectedTexture, gbtn.selectedTexture:IsShown())
 
-					g3btn:HookScript("OnEnter", gBtnOnEnter)
-					g3btn:HookScript("OnLeave", gBtnOnLeave)
-					hooksecurefunc(g3btn.selectedTexture, "SetShown", gSelectedTextureSetShown)
-					gSelectedTextureSetShown(g3btn.selectedTexture, g3btn.selectedTexture:IsShown())
-
-					if g3btn.qualityBorder then -- retail
-						g3btn.qualityBorder:SetTexture()
-						hooksecurefunc(g3btn.qualityBorder, "SetVertexColor", gSetQuality)
+					if gbtn.qualityBorder then -- retail
+						gbtn.qualityBorder:SetTexture()
+						hooksecurefunc(gbtn.qualityBorder, "SetVertexColor", gSetQuality)
 					end
 				end
 			else
 				btn:StripTextures()
 				btn:CreateBackdrop("Transparent", nil, nil, true)
 				btn.backdrop:ClearAllPoints()
-				btn.backdrop:Point('TOPLEFT', btn, 2, -2)
-				btn.backdrop:Point('BOTTOMRIGHT', btn, -2, 2)
+				btn.backdrop:Point('TOPLEFT', btn, 1, -1)
+				btn.backdrop:Point('BOTTOMRIGHT', btn, -1, 1)
+				fprint(btn.backdrop:GetSize())
 
-				btn.factionIcon:Size(38)
-				btn.factionIcon:SetPoint("BOTTOMRIGHT", -2, 3)
+				btn.factionIcon:Size(36)
+				btn.factionIcon:SetPoint("BOTTOMRIGHT", -2, 2)
 
 				btn.dragButton.highlight:SetTexture()
-				btn.dragButton.icon:Size(40)
+				btn.dragButton.icon:Size(36)
 				btn.dragButton.icon:SetTexCoord(unpack(E.TexCoords))
 				btn.dragButton.icon:CreateBackdrop(nil, nil, nil, true)
 				btn.dragButton.activeTexture:SetTexture(E.Media.Textures.White8x8)
