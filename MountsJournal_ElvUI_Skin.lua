@@ -240,12 +240,14 @@ local function scrollMountButtons(frame)
 					end
 				end
 			else
-				btn:StripTextures()
+				btn.background:SetTexture()
+				btn.selectedTexture:SetTexture()
+				btn.highlight:SetTexture()
+
 				btn:CreateBackdrop("Transparent", nil, nil, true)
 				btn.backdrop:ClearAllPoints()
 				btn.backdrop:Point('TOPLEFT', btn, 1, -1)
 				btn.backdrop:Point('BOTTOMRIGHT', btn, -1, 1)
-				fprint(btn.backdrop:GetSize())
 
 				btn.factionIcon:Size(36)
 				btn.factionIcon:SetPoint("BOTTOMRIGHT", -2, 2)
@@ -682,11 +684,15 @@ MountsJournalConfig:HookScript("OnShow", function(self)
 	S:HandleCheckBox(self.noPetInRaid)
 	S:HandleCheckBox(self.noPetInGroup)
 
-	S:HandleCheckBox(self.copyMountTarget)
+	self.mountListGroup:StripTextures()
+	self.mountListGroup:SetTemplate(nil, true)
 	if self.coloredMountNames then -- retail
 		S:HandleCheckBox(self.coloredMountNames)
 	end
 	S:HandleCheckBox(self.arrowButtons)
+	S:HandleCheckBox(self.showTypeSelBtn)
+
+	S:HandleCheckBox(self.copyMountTarget)
 	S:HandleCheckBox(self.openLinks)
 	S:HandleCheckBox(self.showWowheadLink)
 	S:HandleCheckBox(self.statisticCollection)
