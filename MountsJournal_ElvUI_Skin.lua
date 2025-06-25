@@ -483,11 +483,15 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 	local function updateBG(self)
 		local collect = journal.CollectionsJournal
 		local show = not self:IsShown()
-		collect.Center:SetShown(show)
-		collect.TopEdge:SetShown(show)
-		collect.RightEdge:SetShown(show)
-		collect.BottomEdge:SetShown(show)
-		collect.LeftEdge:SetShown(show)
+		if collect.Center then -- classic
+			collect.Center:SetShown(show)
+			collect.TopEdge:SetShown(show)
+			collect.RightEdge:SetShown(show)
+			collect.BottomEdge:SetShown(show)
+			collect.LeftEdge:SetShown(show)
+		elseif collect.backdrop then -- retail
+			collect.backdrop:SetShown(show)
+		end
 		CollectionsJournalTitleText:SetShown(show)
 		collect.CloseButton:SetShown(show)
 		if collect.shadow then -- retail
