@@ -136,35 +136,29 @@ local function petListSkin(journal, petList)
 	petList:Point("BOTTOMLEFT", bgFrame, "BOTTOMRIGHT", 2, 1)
 
 	petList.controlPanel:StripTextures()
+	S:HandleButton(petList.viewToggle)
+	petList.viewToggle:SetSize(22, 22)
 	S:HandleEditBox(petList.searchBox)
 	petList.searchBox:ClearAllPoints()
-	if petList.viewToggle then -- retail
-		S:HandleButton(petList.viewToggle)
-		petList.viewToggle:SetSize(22, 22)
-		petList.searchBox:Point("TOPLEFT", petList.viewToggle, "TOPRIGHT", 4, -1)
-	else -- classic
-		petList.searchBox:Point("TOPLEFT", 8, -8)
-	end
+	petList.searchBox:Point("TOPLEFT", petList.viewToggle, "TOPRIGHT", 4, -1)
 	petList.searchBox:Point("RIGHT", petList.closeButton, "LEFT", 2, 0)
 	petList.searchBox:SetHeight(20)
 	S:HandleCloseButton(petList.closeButton)
 	petList.closeButton:Point("TOPRIGHT", 4, 4)
 
-	if petList.filtersPanel then -- retail
-		petList.filtersPanel:StripTextures()
-		petList.filtersPanel:SetHeight(26)
+	petList.filtersPanel:StripTextures()
+	petList.filtersPanel:SetHeight(26)
 
-		for i, btn in ipairs(petList.filtersPanel.buttons) do
-			S:HandleButton(btn)
-			local checkedTexture = btn:GetCheckedTexture()
-			checkedTexture:SetTexture(E.Media.Textures.White8x8)
-			checkedTexture:SetVertexColor(0.9, 0.8, 0.1, 0.1)
-			btn.icon:SetTexCoord(unpack(E.TexCoords))
-		end
-
-		petList.petListFrame:Point("TOPLEFT", petList.filtersPanel, "BOTTOMLEFT", 0, -1)
-		petList.petListFrame:Point("BOTTOMRIGHT", petList.controlButtons, "TOPRIGHT", 0, 1)
+	for i, btn in ipairs(petList.filtersPanel.buttons) do
+		S:HandleButton(btn)
+		local checkedTexture = btn:GetCheckedTexture()
+		checkedTexture:SetTexture(E.Media.Textures.White8x8)
+		checkedTexture:SetVertexColor(0.9, 0.8, 0.1, 0.1)
+		btn.icon:SetTexCoord(unpack(E.TexCoords))
 	end
+
+	petList.petListFrame:Point("TOPLEFT", petList.filtersPanel, "BOTTOMLEFT", 0, -1)
+	petList.petListFrame:Point("BOTTOMRIGHT", petList.controlButtons, "TOPRIGHT", 0, 1)
 	petList.petListFrame:StripTextures()
 
 	petList.controlButtons:StripTextures()
@@ -223,12 +217,10 @@ local petSelectionBtnSkin do
 		infoFrame.level:ClearAllPoints()
 		infoFrame.level:Point("BOTTOMRIGHT", -2, 2)
 
-		if infoFrame.qualityBorder then -- retail
-			infoFrame.qualityBorder:SetTexture()
-			hooksecurefunc(infoFrame.qualityBorder, "SetVertexColor", setVertexColor)
-			setVertexColor(infoFrame.qualityBorder, infoFrame.qualityBorder:GetVertexColor())
-			hooksecurefunc(infoFrame.qualityBorder, "Hide", hide)
-		end
+		infoFrame.qualityBorder:SetTexture()
+		hooksecurefunc(infoFrame.qualityBorder, "SetVertexColor", setVertexColor)
+		setVertexColor(infoFrame.qualityBorder, infoFrame.qualityBorder:GetVertexColor())
+		hooksecurefunc(infoFrame.qualityBorder, "Hide", hide)
 
 		btn:HookScript("OnEnter", onEnter)
 		btn:HookScript("OnLeave", onLeave)
@@ -317,27 +309,7 @@ local function scrollMountButtons(frame)
 
 	for i, btn in ipairs({frame.ScrollTarget:GetChildren()}) do
 		if not btn.isSkinned then
-			if btn.mounts then -- classic
-				for i, gbtn in ipairs(btn.mounts) do
-					gbtn.icon:ClearAllPoints()
-					gbtn.icon:Point("TOPLEFT", gbtn, 1, -1)
-					gbtn.icon:Point("BOTTOMRIGHT", gbtn, -1, 1)
-					gbtn.icon:SetTexCoord(unpack(E.TexCoords))
-					gbtn.icon:CreateBackdrop(nil, nil, nil, true)
-					gbtn.highlight:SetTexture()
-					gbtn.selectedTexture:SetTexture()
-
-					gbtn:HookScript("OnEnter", gBtnOnEnter)
-					gbtn:HookScript("OnLeave", gBtnOnLeave)
-					hooksecurefunc(gbtn.selectedTexture, "SetShown", gSelectedTextureSetShown)
-					gSelectedTextureSetShown(gbtn.selectedTexture, gbtn.selectedTexture:IsShown())
-
-					if gbtn.qualityBorder then -- retail
-						gbtn.qualityBorder:SetTexture()
-						hooksecurefunc(gbtn.qualityBorder, "SetVertexColor", gSetQuality)
-					end
-				end
-			elseif btn.modelScene then -- retail
+			if btn.modelScene then
 				btn:SetTemplate("Transparent", nil, nil, true)
 				btn.LeftEdge:Point("TOPLEFT", 1, -1)
 				btn.LeftEdge:Point("BOTTOMLEFT", 1, 1)
@@ -405,7 +377,7 @@ local function scrollMountButtons(frame)
 					hooksecurefunc(btn.dragButton.qualityBorder, "SetVertexColor", dSetQuality)
 					dSetQuality(btn.dragButton.qualityBorder, btn.dragButton.qualityBorder:GetVertexColor())
 				end
-			else -- retail
+			else
 				btn.icon:ClearAllPoints()
 				btn.icon:Point("TOPLEFT", btn, 1, -1)
 				btn.icon:Point("BOTTOMRIGHT", btn, -1, 1)
@@ -483,20 +455,9 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 	local function updateBG(self)
 		local collect = journal.CollectionsJournal
 		local show = not self:IsShown()
-		if collect.Center then -- classic
-			collect.Center:SetShown(show)
-			collect.TopEdge:SetShown(show)
-			collect.RightEdge:SetShown(show)
-			collect.BottomEdge:SetShown(show)
-			collect.LeftEdge:SetShown(show)
-		elseif collect.backdrop then -- retail
-			collect.backdrop:SetShown(show)
-		end
+		collect.backdrop:SetShown(show)
 		CollectionsJournalTitleText:SetShown(show)
 		collect.CloseButton:SetShown(show)
-		if collect.shadow then -- retail
-			collect.shadow:SetShown(show)
-		end
 	end
 	updateBG(bgFrame)
 	bgFrame:HookScript("OnShow", updateBG)
@@ -564,39 +525,29 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 	journal.filtersPanel:StripTextures()
 	S:HandleButton(journal.gridToggleButton)
 	journal.gridToggleButton:SetSize(22, 22)
-	--journal.gridToggleButton:Point("TOPLEFT", 3, -4)
 	S:HandleButton(journal.filtersToggle)
 	journal.filtersToggle:SetSize(22, 22)
-	--journal.filtersToggle:Point("LEFT", journal.gridToggleButton, "RIGHT", 1, 0)
 	S:HandleEditBox(journal.searchBox)
-	--journal.searchBox:Point("TOPRIGHT", -97, -5)
 	ddStreachButton(journal.filtersButton)
 	journal.filtersButton:Point("LEFT", journal.searchBox, "RIGHT", 2, 0)
 	journal.filtersBar:StripTextures()
 	journal.filtersBar:SetTemplate("Transparent")
 
-	if journal.gridModelSettings then -- retail
-		journal.gridToggleButton:Point("TOPLEFT", 3, -4)
-		journal.filtersToggle:Point("LEFT", journal.gridToggleButton, "RIGHT", 1, 0)
-		journal.searchBox:Point("TOPRIGHT", -97, -5)
+	journal.gridToggleButton:Point("TOPLEFT", 3, -4)
+	journal.filtersToggle:Point("LEFT", journal.gridToggleButton, "RIGHT", 1, 0)
+	journal.searchBox:Point("TOPRIGHT", -97, -5)
 
-		S:HandleSliderFrame(journal.gridModelSettings.strideSlider.slider)
-		journal.gridModelSettings.strideSlider.slider:Point("BOTTOMLEFT", 0, 5)
-		ddButton(journal.gridModelAnimation)
-		journal.gridModelAnimation:SetHeight(25)
+	S:HandleSliderFrame(journal.gridModelSettings.strideSlider.slider)
+	journal.gridModelSettings.strideSlider.slider:Point("BOTTOMLEFT", 0, 5)
+	ddButton(journal.gridModelAnimation)
+	journal.gridModelAnimation:SetHeight(25)
 
-		journal.inspectFrame:StripTextures()
-		journal.inspectFrame:SetTemplate("Transparent")
-		if journal.inspectFrame.TitleContainer.TitleBg then -- classic
-			journal.inspectFrame.TitleContainer.TitleBg:Hide()
-		end
-		S:HandleCloseButton(journal.inspectFrame.close)
-	else -- classic
-		journal.filtersToggle:Point("TOP", 0, -4)
-		journal.filtersToggle:Point("LEFT", 4, 0)
-		journal.gridToggleButton:Point("LEFT", journal.filtersToggle, "RIGHT", 1, 0)
-		journal.searchBox:Point("TOPLEFT", journal.gridToggleButton, "TOPRIGHT", 4, -2)
+	journal.inspectFrame:StripTextures()
+	journal.inspectFrame:SetTemplate("Transparent")
+	if journal.inspectFrame.TitleContainer.TitleBg then -- classic
+		journal.inspectFrame.TitleContainer.TitleBg:Hide()
 	end
+	S:HandleCloseButton(journal.inspectFrame.close)
 
 	local function tabOnEnter(self)
 		self.text:SetTextColor(0.9, 0.8, 0.1)
@@ -669,9 +620,7 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 	end)
 
 	journal.mountDisplay.info.modelSceneSettingsButton:ddSetDisplayMode("ElvUI")
-	if journal.multipleMountBtn then -- retail
-		journal.multipleMountBtn:ddSetDisplayMode("ElvUI")
-	end
+	journal.multipleMountBtn:ddSetDisplayMode("ElvUI")
 	ddButton(journal.modelScene.animationsCombobox)
 
 	journal.worldMap:StripTextures()
