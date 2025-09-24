@@ -576,6 +576,7 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 
 	journal.shownPanel:StripTextures()
 	journal.shownPanel:SetTemplate("Transparent")
+	journal.shownPanel.resetFilter:ddSetDisplayMode("ElvUI")
 	bgFrame.leftInset:StripTextures()
 	bgFrame.leftInset:Point("BOTTOMLEFT", 0, 27)
 	S:HandleTrimScrollBar(journal.leftInset.scrollBar)
