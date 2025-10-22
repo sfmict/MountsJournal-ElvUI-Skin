@@ -793,6 +793,9 @@ MountsJournalConfig:HookScript("OnShow", function(self)
 	S:HandleCheckBox(self.statisticCollection)
 	S:HandleCheckBox(self.tooltipMount)
 	if self.resetHelp then -- retail
+		self.tooltipGroup:StripTextures()
+		self.tooltipGroup:SetTemplate(nil, true)
+		S:HandleCheckBox(self.tooltipItems)
 		S:HandleButton(self.resetHelp)
 	end
 	S:HandleButton(self.applyBtn)
