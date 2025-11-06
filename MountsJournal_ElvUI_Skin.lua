@@ -18,6 +18,27 @@ hooksecurefunc(MountsJournalFrame, "ADDON_LOADED", function(journal)
 end)
 
 
+local function setBorderButton(btn, func)
+	btn:SetTemplate("Transparent", nil, nil, true)
+	btn.LeftEdge:Point("TOPLEFT", 1, -1)
+	btn.LeftEdge:Point("BOTTOMLEFT", 1, 1)
+	btn.RightEdge:Point("TOPRIGHT", -1, -1)
+	btn.RightEdge:Point("BOTTOMRIGHT", -1, 1)
+	btn.TopEdge:Point("TOPLEFT", 1, -1)
+	btn.TopEdge:Point("TOPRIGHT", -1, -1)
+	btn.BottomEdge:Point("BOTTOMLEFT", 1, 1)
+	btn.BottomEdge:Point("BOTTOMRIGHT", -1, 1)
+	btn.Center:Point("TOPLEFT", 1, -1)
+	btn.Center:Point("BOTTOMRIGHT", -1, 1)
+	btn.TopLeftCorner:Point("TOPLEFT", 1, -1)
+	btn.TopRightCorner:Point("TOPRIGHT", -1, -1)
+	btn.BottomLeftCorner:Point("BOTTOMLEFT", 1, 1)
+	btn.BottomRightCorner:Point("BOTTOMRIGHT", -1, 1)
+	btn.dSetBackdropBorderColor = btn.SetBackdropBorderColor
+	btn.SetBackdropBorderColor = func
+end
+
+
 -- PET LIST
 local function setQuality(texture, ...)
 	texture:GetParent().icon.backdrop:SetBackdropBorderColor(...)
@@ -91,23 +112,7 @@ local function petButtonSkin(btn, rightPadding)
 			hooksecurefunc(infoFrame.qualityBorder, "SetVertexColor", setQuality)
 		end
 	else
-		btn:SetTemplate("Transparent", nil, nil, true)
-		btn.LeftEdge:Point("TOPLEFT", 1, -1)
-		btn.LeftEdge:Point("BOTTOMLEFT", 1, 1)
-		btn.RightEdge:Point("TOPRIGHT", -1, -1)
-		btn.RightEdge:Point("BOTTOMRIGHT", -1, 1)
-		btn.TopEdge:Point("TOPLEFT", 1, -1)
-		btn.TopEdge:Point("TOPRIGHT", -1, -1)
-		btn.BottomEdge:Point("BOTTOMLEFT", 1, 1)
-		btn.BottomEdge:Point("BOTTOMRIGHT", -1, 1)
-		btn.Center:Point("TOPLEFT", 1, -1)
-		btn.Center:Point("BOTTOMRIGHT", -1, 1)
-		btn.TopLeftCorner:Point("TOPLEFT", 1, -1)
-		btn.TopRightCorner:Point("TOPRIGHT", -1, -1)
-		btn.BottomLeftCorner:Point("BOTTOMLEFT", 1, 1)
-		btn.BottomRightCorner:Point("BOTTOMRIGHT", -1, 1)
-		btn.dSetBackdropBorderColor = btn.SetBackdropBorderColor
-		btn.SetBackdropBorderColor = gModelBtnBorder
+		setBorderButton(btn, gModelBtnBorder)
 		btn.levelBG:StripTextures()
 		btn.level:ClearAllPoints()
 		btn.level:Point("BOTTOMLEFT", 4, 4)
@@ -310,23 +315,7 @@ local function scrollMountButtons(frame)
 	for i, btn in ipairs({frame.ScrollTarget:GetChildren()}) do
 		if not btn.isSkinned then
 			if btn.modelScene then
-				btn:SetTemplate("Transparent", nil, nil, true)
-				btn.LeftEdge:Point("TOPLEFT", 1, -1)
-				btn.LeftEdge:Point("BOTTOMLEFT", 1, 1)
-				btn.RightEdge:Point("TOPRIGHT", -1, -1)
-				btn.RightEdge:Point("BOTTOMRIGHT", -1, 1)
-				btn.TopEdge:Point("TOPLEFT", 1, -1)
-				btn.TopEdge:Point("TOPRIGHT", -1, -1)
-				btn.BottomEdge:Point("BOTTOMLEFT", 1, 1)
-				btn.BottomEdge:Point("BOTTOMRIGHT", -1, 1)
-				btn.Center:Point("TOPLEFT", 1, -1)
-				btn.Center:Point("BOTTOMRIGHT", -1, 1)
-				btn.TopLeftCorner:Point("TOPLEFT", 1, -1)
-				btn.TopRightCorner:Point("TOPRIGHT", -1, -1)
-				btn.BottomLeftCorner:Point("BOTTOMLEFT", 1, 1)
-				btn.BottomRightCorner:Point("BOTTOMRIGHT", -1, 1)
-				btn.dSetBackdropBorderColor = btn.SetBackdropBorderColor
-				btn.SetBackdropBorderColor = gModelBtnBorder
+				setBorderButton(btn, gModelBtnBorder)
 
 				local drag = btn.dragButton
 				drag.icon:ClearAllPoints()
@@ -679,6 +668,28 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 	S:HandleTab(journal.bgFrame.modelTab)
 	journal.bgFrame.modelTab:Point("RIGHT", journal.bgFrame.mapTab, "LEFT", 5, 0)
 end)
+
+
+do
+	local setBackdropBorderColor = function(btn, r)
+		if r > .6 then
+			local r,g,b = unpack(E.media.rgbvaluecolor)
+			btn:dSetBackdropBorderColor(r,g,b)
+			btn.texture:SetVertexColor(r,g,b)
+		else
+			btn:dSetBackdropBorderColor(unpack(E.media.bordercolor))
+		end
+	end
+
+	hooksecurefunc(MountsJournalFrame, "updateFilterNavBar", function(journal)
+		for btn in journal.shownPanel.framePool:EnumerateActive() do
+			if not btn.isSkinned then
+				btn.isSkinned = true
+				setBorderButton(btn, setBackdropBorderColor)
+			end
+		end
+	end)
+end
 
 
 -- SUMMON PANEL
