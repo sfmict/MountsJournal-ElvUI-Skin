@@ -3,19 +3,11 @@ if not (E.private.skins.blizzard.enable and E.private.skins.blizzard.collections
 local S = E:GetModule("Skins")
 
 
-MJTooltipModel:StripTextures()
-MJTooltipModel:CreateBackdrop("Transparent")
-MJTooltipModel:HookScript("OnShow", function(self)
-	local point, rFrame, rPoint, x, y = self:GetPoint()
-	self:Point(point, rFrame, rPoint, -x, -y)
-end)
-
-
-hooksecurefunc(MountsJournalFrame, "ADDON_LOADED", function(journal)
+local function journal_ADDON_LOADED(journal)
 	if journal.useMountsJournalButton then
 		S:HandleCheckBox(journal.useMountsJournalButton)
 	end
-end)
+end
 
 
 local function setBorderButton(btn, func)
@@ -436,7 +428,7 @@ end
 
 
 -- JOURNAL
-hooksecurefunc(MountsJournalFrame, "init", function(journal)
+local function journal_init(journal)
 	local bgFrame = journal.bgFrame
 	S:HandlePortraitFrame(bgFrame)
 	S:HandleCloseButton(bgFrame.closeButton)
@@ -506,10 +498,10 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 	bgFrame.summon2.icon:SetDrawLayer("OVERLAY")
 
 	bgFrame.summonPanelSettings:ddSetDisplayMode("ElvUI")
-	S:HandleSliderFrame(journal.summonPanel.fade.slider)
-	journal.summonPanel.fade.slider:Point("BOTTOMLEFT", 0, 3)
-	S:HandleSliderFrame(journal.summonPanel.resize.slider)
-	journal.summonPanel.resize.slider:Point("BOTTOMLEFT", 0, 3)
+	S:HandleSliderFrame(MountsJournal.summonPanel.fade.slider)
+	MountsJournal.summonPanel.fade.slider:Point("BOTTOMLEFT", 0, 3)
+	S:HandleSliderFrame(MountsJournal.summonPanel.resize.slider)
+	MountsJournal.summonPanel.resize.slider:Point("BOTTOMLEFT", 0, 3)
 
 	journal.filtersPanel:StripTextures()
 	S:HandleButton(journal.gridToggleButton)
@@ -667,10 +659,10 @@ hooksecurefunc(MountsJournalFrame, "init", function(journal)
 	journal.bgFrame.mapTab:Point("RIGHT", journal.bgFrame.settingsTab, "LEFT", 5, 0)
 	S:HandleTab(journal.bgFrame.modelTab)
 	journal.bgFrame.modelTab:Point("RIGHT", journal.bgFrame.mapTab, "LEFT", 5, 0)
-end)
+end
 
 
-do
+local journal_updateFilterNavBar do
 	local setBackdropBorderColor = function(btn, r)
 		if r > .6 then
 			local r,g,b = unpack(E.media.rgbvaluecolor)
@@ -681,20 +673,20 @@ do
 		end
 	end
 
-	hooksecurefunc(MountsJournalFrame, "updateFilterNavBar", function(journal)
+	function journal_updateFilterNavBar(journal)
 		for btn in journal.shownPanel.framePool:EnumerateActive() do
 			if not btn.isSkinned then
 				btn.isSkinned = true
 				setBorderButton(btn, setBackdropBorderColor)
 			end
 		end
-	end)
+	end
 end
 
 
 -- SUMMON PANEL
-MountsJournal:on("CREATE_BUTTONS", function()
-	local summonPanel = MountsJournalFrame.summonPanel
+MountsJournal:on("ADDON_INIT", function(mounts)
+	local summonPanel = mounts.summonPanel
 
 	local function skinButton(btn)
 		if btn.isSkinned then return end
@@ -717,7 +709,7 @@ end)
 
 
 -- OPTIONS
-MountsJournalConfig:HookScript("OnShow", function(self)
+local function config_onShow(self)
 	self.leftPanel:StripTextures()
 	self.leftPanel:SetTemplate("Transparent")
 
@@ -811,11 +803,11 @@ MountsJournalConfig:HookScript("OnShow", function(self)
 	end
 	S:HandleButton(self.applyBtn)
 	S:HandleButton(self.cancelBtn)
-end)
+end
 
 
 -- IconData
-MountsJournalConfig.iconData:HookScript("OnShow", function(self)
+local function config_iconData_onShow(self)
 	self:StripTextures()
 	self:SetTemplate("Transparent")
 
@@ -849,7 +841,7 @@ MountsJournalConfig.iconData:HookScript("OnShow", function(self)
 			end
 		end
 	end)
-end)
+end
 
 
 -- CLASSES
@@ -883,7 +875,7 @@ local function reskinEditScrollBar(scrollBar)
 end
 
 
-MountsJournalConfigClasses:HookScript("OnShow", function(self)
+local function classConfig_onShow(self)
 	self.leftPanel:StripTextures()
 	self.leftPanel:SetTemplate("Transparent")
 	S:HandleCheckBox(self.charCheck)
@@ -928,10 +920,10 @@ MountsJournalConfigClasses:HookScript("OnShow", function(self)
 
 	reskinEditBox(self.moveFallMF)
 	reskinEditBox(self.combatMF)
-end)
+end
 
 
-hooksecurefunc(MountsJournalConfigClasses, "showClassSettings", function(self)
+local function classConfig_showClassSettings(self)
 	if self.sliderPool then -- retail
 		for option in self.sliderPool:EnumerateActive() do
 			if not option.isSkinned then
@@ -948,11 +940,11 @@ hooksecurefunc(MountsJournalConfigClasses, "showClassSettings", function(self)
 			option.isSkinned = true
 		end
 	end
-end)
+end
 
 
 -- RULES
-MountsJournalConfigRules:HookScript("OnShow", function(self)
+local function rules_onShow(self)
 	ddStreachButton(self.ruleSets)
 	S:HandleButton(self.snippetToggle)
 	ddButton(self.summons)
@@ -1057,11 +1049,11 @@ MountsJournalConfigRules:HookScript("OnShow", function(self)
 		hooksecurefunc(self, "setCondValueOption", onAcqure)
 		hooksecurefunc(self, "setActionValueOption", onAcqure)
 	end)
-end)
+end
 
 
 -- SNIPPETS
-MountsJournalSnippets:HookScript("OnShow", function(self)
+local function snippets_onShow(self)
 	self:Point("TOPLEFT", MountsJournalFrame.bgFrame, "TOPRIGHT", 1, 0)
 	self:Point("BOTTOMLEFT", MountsJournalFrame.bgFrame, "BOTTOMRIGHT", 1, 0)
 	self:StripTextures()
@@ -1082,10 +1074,10 @@ MountsJournalSnippets:HookScript("OnShow", function(self)
 	S:HandleTrimScrollBar(self.scrollBar)
 
 	self.snipMenu:ddSetDisplayMode("ElvUI")
-end)
+end
 
 
-MountsJournalCodeEdit:HookScript("OnShow", function(self)
+local function codeEdit_onShow(self)
 	self:StripTextures()
 	self:SetTemplate("Transparent")
 	S:HandleEditBox(self.nameEdit)
@@ -1101,10 +1093,10 @@ MountsJournalCodeEdit:HookScript("OnShow", function(self)
 	self.codeBtn:SetTemplate("Transparent")
 	self.codeBtn:SetBackdropColor(.08, .08, .08)
 	reskinEditScrollBar(self.scrollBar)
-end)
+end
 
 
-MountsJournalDataDialog:HookScript("OnShow", function(self)
+local function dataDialog_onShow(self)
 	self:StripTextures()
 	self:SetTemplate("Transparent")
 	if self.TitleContainer.TitleBg then -- classic
@@ -1115,11 +1107,39 @@ MountsJournalDataDialog:HookScript("OnShow", function(self)
 	reskinEditScrollBar(self.scrollBar)
 	S:HandleButton(self.btn1)
 	S:HandleButton(self.btn2)
-end)
+end
 
 
-hooksecurefunc(MountsJournalDataDialog, "open", function(self)
+local function dataDialog_open(self)
 	if self.nameString:IsShown() then
 		self.codeBtn:Point("TOPLEFT", self.nameString, "BOTTOMLEFT", -3, -7)
 	end
-end)
+end
+
+
+MountsJournal:RegisterEvent("ADDON_LOADED")
+function MountsJournal:ADDON_LOADED(addonName)
+	if addonName ~= "MountsJournalUI" then return end
+	self:UnregisterEvent("ADDON_LOADED")
+	self.ADDON_LOADED = nil
+
+	MJTooltipModel:StripTextures()
+	MJTooltipModel:CreateBackdrop("Transparent")
+	MJTooltipModel:HookScript("OnShow", function(self)
+		local point, rFrame, rPoint, x, y = self:GetPoint()
+		self:Point(point, rFrame, rPoint, -x, -y)
+	end)
+
+	hooksecurefunc(MountsJournalFrame, "ADDON_LOADED", journal_ADDON_LOADED)
+	hooksecurefunc(MountsJournalFrame, "init", journal_init)
+	hooksecurefunc(MountsJournalFrame, "updateFilterNavBar", journal_updateFilterNavBar)
+	MountsJournalConfig:HookScript("OnShow", config_onShow)
+	MountsJournalConfig.iconData:HookScript("OnShow", config_iconData_onShow)
+	MountsJournalConfigClasses:HookScript("OnShow", classConfig_onShow)
+	hooksecurefunc(MountsJournalConfigClasses, "showClassSettings", classConfig_showClassSettings)
+	MountsJournalConfigRules:HookScript("OnShow", rules_onShow)
+	MountsJournalSnippets:HookScript("OnShow", snippets_onShow)
+	MountsJournalCodeEdit:HookScript("OnShow", codeEdit_onShow)
+	MountsJournalDataDialog:HookScript("OnShow", dataDialog_onShow)
+	hooksecurefunc(MountsJournalDataDialog, "open", dataDialog_open)
+end
