@@ -3,13 +3,6 @@ if not (E.private.skins.blizzard.enable and E.private.skins.blizzard.collections
 local S = E:GetModule("Skins")
 
 
-local function journal_ADDON_LOADED(journal)
-	if journal.useMountsJournalButton then
-		S:HandleCheckBox(journal.useMountsJournalButton)
-	end
-end
-
-
 local function setBorderButton(btn, func)
 	btn:SetTemplate("Transparent", nil, nil, true)
 	btn.LeftEdge:Point("TOPLEFT", 1, -1)
@@ -1117,12 +1110,7 @@ local function dataDialog_open(self)
 end
 
 
-MountsJournal:RegisterEvent("ADDON_LOADED")
-function MountsJournal:ADDON_LOADED(addonName)
-	if addonName ~= "MountsJournalUI" then return end
-	self:UnregisterEvent("ADDON_LOADED")
-	self.ADDON_LOADED = nil
-
+local function skinUI()
 	MJTooltipModel:StripTextures()
 	MJTooltipModel:CreateBackdrop("Transparent")
 	MJTooltipModel:HookScript("OnShow", function(self)
@@ -1130,7 +1118,8 @@ function MountsJournal:ADDON_LOADED(addonName)
 		self:Point(point, rFrame, rPoint, -x, -y)
 	end)
 
-	hooksecurefunc(MountsJournalFrame, "ADDON_LOADED", journal_ADDON_LOADED)
+	S:HandleCheckBox(MountsJournalFrame.useMountsJournalButton)
+
 	hooksecurefunc(MountsJournalFrame, "init", journal_init)
 	hooksecurefunc(MountsJournalFrame, "updateFilterNavBar", journal_updateFilterNavBar)
 	MountsJournalConfig:HookScript("OnShow", config_onShow)
@@ -1142,4 +1131,13 @@ function MountsJournal:ADDON_LOADED(addonName)
 	MountsJournalCodeEdit:HookScript("OnShow", codeEdit_onShow)
 	MountsJournalDataDialog:HookScript("OnShow", dataDialog_onShow)
 	hooksecurefunc(MountsJournalDataDialog, "open", dataDialog_open)
+end
+
+
+if MountsJournal.ADDON_LOADED then
+	hooksecurefunc(MountsJournal, "ADDON_LOADED", function(_, addonName)
+		if addonName == "Blizzard_Collections" then skinUI() end
+	end)
+else
+	skinUI()
 end
