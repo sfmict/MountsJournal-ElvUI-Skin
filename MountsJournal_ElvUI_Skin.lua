@@ -1,6 +1,7 @@
 local E = ElvUI[1]
 if not (E.private.skins.blizzard.enable and E.private.skins.blizzard.collections) then return end
 local S = E:GetModule("Skins")
+local TT = E:GetModule('Tooltip')
 
 
 local function setBorderButton(btn, func)
@@ -236,6 +237,14 @@ local function dSelectedTextureSetShown(texture, shown)
 end
 
 
+local function dBtnDragOnEnter(btn)
+	local point, rFrame, rPoint, x, y = GameTooltip:GetPoint()
+	if rFrame == MJTooltipModel then
+		GameTooltip:Point(point, rFrame, rPoint, -x, y)
+	end
+end
+
+
 local function dBtnOnEnter(btn)
 	local r, g, b = unpack(E.media.rgbvaluecolor)
 	btn.backdrop:SetBackdropBorderColor(r, g, b)
@@ -279,6 +288,7 @@ local function gBtnOnEnter(btn)
 	local r, g, b = unpack(E.media.rgbvaluecolor)
 	btn.icon.backdrop:SetBackdropBorderColor(r, g, b)
 	btn.hovered = true
+	dBtnDragOnEnter(btn)
 end
 
 
@@ -340,6 +350,7 @@ local function scrollMountButtons(frame)
 				btn.dragButton.icon:CreateBackdrop(nil, nil, nil, true)
 				btn.dragButton.activeTexture:SetTexture(E.Media.Textures.White8x8)
 				btn.dragButton.activeTexture:SetVertexColor(0.9, 0.8, 0.1, 0.3)
+				btn.dragButton:HookScript("OnEnter", dBtnDragOnEnter)
 
 				btn:HookScript("OnEnter", dBtnOnEnter)
 				btn:HookScript("OnLeave", dBtnOnLeave)
@@ -1111,12 +1122,15 @@ end
 
 
 local function skinUI()
-	MJTooltipModel:StripTextures()
-	MJTooltipModel:CreateBackdrop("Transparent")
-	MJTooltipModel:HookScript("OnShow", function(self)
-		local point, rFrame, rPoint, x, y = self:GetPoint()
-		self:Point(point, rFrame, rPoint, -x, -y)
-	end)
+	if E.private.skins.blizzard.enable and E.private.skins.blizzard.tooltip then
+		TT:SetStyle(MJTooltipModel)
+		MJTooltipModel.model:Point("TOPLEFT", 1, -1)
+		MJTooltipModel.model:SetSize(198, 198)
+		MJTooltipModel:HookScript("OnShow", function(self)
+			local point, rFrame, rPoint, x, y = self:GetPoint()
+			self:Point(point, rFrame, rPoint, -x, -y)
+		end)
+	end
 
 	S:HandleCheckBox(MountsJournalFrame.useMountsJournalButton)
 
