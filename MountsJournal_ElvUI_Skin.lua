@@ -43,10 +43,19 @@ local function selectedTextureSetShown(texture, shown)
 end
 
 
+local function petBtnOnEnter()
+	local point, rFrame, rPoint, x, y = GameTooltip:GetPoint()
+	if rFrame == MJTooltipModel then
+		GameTooltip:Point(point, rFrame, rPoint, x, -y)
+	end
+end
+
+
 local function btnOnEnter(btn)
 	local r, g, b = unpack(E.media.rgbvaluecolor)
 	btn.backdrop:SetBackdropBorderColor(r, g, b)
 	btn.hovered = true
+	petBtnOnEnter()
 end
 
 
@@ -102,6 +111,7 @@ local function petButtonSkin(btn, rightPadding)
 		btn.levelBG:StripTextures()
 		btn.level:ClearAllPoints()
 		btn.level:Point("BOTTOMLEFT", 4, 4)
+		btn:HookScript("OnEnter", petBtnOnEnter)
 	end
 end
 
@@ -183,6 +193,7 @@ local petSelectionBtnSkin do
 		local infoFrame = self.infoFrame
 		infoFrame.icon.backdrop:SetBackdropBorderColor(unpack(E.media.rgbvaluecolor))
 		infoFrame.hovered = true
+		petBtnOnEnter()
 	end
 
 	local function onLeave(self)
@@ -491,10 +502,14 @@ local function journal_init(journal)
 		HandleDynamicFlightButton(bgFrame.targetMount)
 	else -- classic
 		S:HandleItemButton(bgFrame.targetMount)
-		bgFrame.targetMount.checkedTexture:SetInside()
-		bgFrame.targetMount.checkedTexture:SetColorTexture(.5, .9, .5, .3)
-		bgFrame.targetMount.icon:SetDrawLayer("OVERLAY")
 	end
+	local targetChecked = bgFrame.targetMount.checkedTexture
+	targetChecked:SetTexture()
+	targetChecked:CreateBackdrop("Transparent")
+	targetChecked.backdrop:SetBackdropBorderColor(.5, .9, .5)
+	targetChecked.backdrop:SetShown(targetChecked:IsShown())
+	targetChecked:HookScript("OnShow", function(self) self.backdrop:Show() end)
+	targetChecked:HookScript("OnHide", function(self) self.backdrop:Hide() end)
 
 	S:HandleItemButton(bgFrame.summon1)
 	bgFrame.summon1.icon:SetDrawLayer("OVERLAY")
