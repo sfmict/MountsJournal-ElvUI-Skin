@@ -1064,6 +1064,12 @@ local function rules_onShow(self)
 		macro:SetTemplate("Transparent")
 		reskinEditScrollBar(macro.scrollBar)
 
+		if self.actionPanel.groupName then -- retail
+			S:HandleEditBox(self.actionPanel.groupName)
+			self.actionPanel.groupName.backdrop:Point("TOPLEFT", 0, -2)
+			self.actionPanel.groupName.backdrop:Point("BOTTOMRIGHT", 0, 2)
+		end
+
 		local function onAcqure()
 			for btn in self.btnPool:EnumerateActive() do
 				if not btn.isSkinned then
@@ -1074,11 +1080,17 @@ local function rules_onShow(self)
 			for edit in self.editPool:EnumerateActive() do
 				if not edit.isSkinned then
 					edit.isSkinned = true
-					edit.border:Hide()
-					edit:ClearBackdrop()
-					edit:CreateBackdrop()
-					edit.backdrop:Point("TOPLEFT", 0, -5)
-					edit.backdrop:Point("BOTTOMRIGHT", 0, 5)
+					if edit.border then -- classic
+						edit.border:Hide()
+						edit:ClearBackdrop()
+						edit:CreateBackdrop()
+						edit.backdrop:Point("TOPLEFT", 0, -5)
+						edit.backdrop:Point("BOTTOMRIGHT", 0, 5)
+					else -- retail
+						S:HandleEditBox(edit)
+						edit.backdrop:Point("TOPLEFT", 0, -2)
+						edit.backdrop:Point("BOTTOMRIGHT", 0, 2)
+					end
 				end
 			end
 		end
