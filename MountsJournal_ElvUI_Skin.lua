@@ -44,10 +44,14 @@ end
 
 
 local function petBtnOnEnter()
-	local point, rFrame, rPoint, x, y = GameTooltip:GetPoint()
-	if rFrame == MJTooltipModel then
-		GameTooltip:Point(point, rFrame, rPoint, x, -y)
+	if not MJTooltipModel:IsShown() then return end
+	local point, rFrame, rPoint, x, y = GameTooltip:GetPoint(1)
+	GameTooltip:Point(point, rFrame, rPoint, x, -y)
+	point, rFrame, rPoint, x, y = MJTooltipModel:GetPoint(1)
+	if point == "LEFT" then
+		point, rFrame, rPoint, x, y = MJTooltipModel:GetPoint(2)
 	end
+	MJTooltipModel:Point(point, rFrame, rPoint, 2, 1)
 end
 
 
@@ -141,8 +145,8 @@ local function petListSkin(journal, petList)
 	petList.viewToggle:SetSize(22, 22)
 	S:HandleEditBox(petList.searchBox)
 	petList.searchBox:ClearAllPoints()
-	petList.searchBox:Point("TOPLEFT", petList.viewToggle, "TOPRIGHT", 4, -1)
-	petList.searchBox:Point("RIGHT", petList.closeButton, "LEFT", 2, 0)
+	petList.searchBox:Point("TOPLEFT", petList.viewToggle, "TOPRIGHT", 5, -1)
+	petList.searchBox:Point("RIGHT", petList.closeButton, "LEFT", -2, 0)
 	petList.searchBox:SetHeight(20)
 	S:HandleCloseButton(petList.closeButton)
 	petList.closeButton:Point("TOPRIGHT", 4, 4)
@@ -466,6 +470,15 @@ local function journal_init(journal)
 	journal.navBar.homeButton:SetHeight(28)
 	journal.navBar.homeButton.xoffset = 1
 	journal.navBar.dropDown:ddSetDisplayMode("ElvUI")
+	S:HandleButton(journal.navBar.overflowButton)
+	journal.navBar.overflowButton:SetHeight(28)
+	for _, tex in ipairs({journal.navBar.overflowButton:GetNormalTexture(), journal.navBar.overflowButton:GetPushedTexture()}) do
+		S:SetupArrow(tex, 'left')
+		tex:SetTexCoord(0, 1, 0, 1)
+		tex:ClearAllPoints()
+		tex:Point('CENTER')
+		tex:Size(14)
+	end
 
 	journal.mountCount:StripTextures()
 	bgFrame.rightInset:StripTextures()
@@ -529,13 +542,13 @@ local function journal_init(journal)
 	journal.filtersToggle:SetSize(22, 22)
 	S:HandleEditBox(journal.searchBox)
 	ddStreachButton(journal.filtersButton)
-	journal.filtersButton:Point("LEFT", journal.searchBox, "RIGHT", 2, 0)
+	journal.filtersButton:Point("LEFT", journal.searchBox, "RIGHT", 5, 0)
 	journal.filtersBar:StripTextures()
 	journal.filtersBar:SetTemplate("Transparent")
 
 	journal.gridToggleButton:Point("TOPLEFT", 3, -4)
 	journal.filtersToggle:Point("LEFT", journal.gridToggleButton, "RIGHT", 1, 0)
-	journal.searchBox:Point("TOPRIGHT", -97, -5)
+	journal.searchBox:Point("TOPRIGHT", -96, -5)
 
 	S:HandleSliderFrame(journal.gridModelSettings.strideSlider.slider)
 	journal.gridModelSettings.strideSlider.slider:Point("BOTTOMLEFT", 0, 5)
@@ -654,6 +667,8 @@ local function journal_init(journal)
 	mapSettings.existingLists:Point("TOPLEFT", bgFrame, "TOPRIGHT", 2, -1)
 	mapSettings.existingLists:Point("BOTTOMLEFT", bgFrame, "BOTTOMRIGHT", 2, 1)
 	S:HandleEditBox(mapSettings.existingLists.searchBox)
+	mapSettings.existingLists.searchBox:Point("TOPLEFT", 10, -6)
+	mapSettings.existingLists.searchBox:Point("TOPRIGHT", -7, -6)
 	S:HandleTrimScrollBar(mapSettings.existingLists.scrollBar)
 
 	hooksecurefunc(mapSettings.existingLists, "toggleInit", function(self, btn, data)
@@ -674,6 +689,8 @@ local function journal_init(journal)
 	end
 
 	S:HandleTab(journal.bgFrame.settingsTab)
+	local point, rFrame, rPoint, x, y = journal.bgFrame.settingsTab:GetPoint()
+	journal.bgFrame.settingsTab:Point(point, rFrame, rPoint, x, y - 2)
 	S:HandleTab(journal.bgFrame.mapTab)
 	journal.bgFrame.mapTab:Point("RIGHT", journal.bgFrame.settingsTab, "LEFT", 5, 0)
 	S:HandleTab(journal.bgFrame.modelTab)
@@ -835,7 +852,7 @@ local function config_iconData_onShow(self)
 	S:HandleEditBox(self.searchBox)
 	self.searchBox:Point("TOPLEFT", 18, -27)
 	ddStreachButton(self.filtersButton)
-	self.filtersButton:Point("LEFT", self.searchBox, "RIGHT", 2, 0)
+	self.filtersButton:Point("LEFT", self.searchBox, "RIGHT", 5, 0)
 	S:HandleTrimScrollBar(self.scrollBar)
 	S:HandleButton(self.cancel)
 	S:HandleButton(self.ok)
@@ -970,6 +987,7 @@ local function rules_onShow(self)
 	S:HandleButton(self.addRuleBtn)
 	S:HandleButton(self.importRuleBtn)
 	S:HandleEditBox(self.searchBox)
+	self.searchBox:Point("RIGHT", self.resetRulesBtn, -4, 0)
 	S:HandleButton(self.resetRulesBtn)
 	S:HandleCheckBox(self.altMode)
 	S:HandleTrimScrollBar(self.scrollBar)
@@ -1086,8 +1104,8 @@ local function snippets_onShow(self)
 	S:HandleButton(self.importBtn)
 
 	S:HandleEditBox(self.searchBox)
-	self.searchBox:Point("LEFT", 10, 0)
-	self.searchBox:Point("RIGHT", -4, 0)
+	self.searchBox:Point("LEFT", 12, 0)
+	self.searchBox:Point("RIGHT", -8, 0)
 
 	self.bg:StripTextures()
 	S:HandleTrimScrollBar(self.scrollBar)
@@ -1169,4 +1187,27 @@ if MountsJournal.ADDON_LOADED then
 	end)
 else
 	skinUI()
+end
+
+
+-- DressUpFrame
+if DressUpFrame and DressUpFrame.mjBtn then -- retail
+	local mjBtn = DressUpFrame.mjBtn
+	mjBtn:StripTextures(true)
+	mjBtn:Size(14)
+	mjBtn:Point("TOPLEFT", 3, -3)
+	mjBtn:GetHighlightTexture():Kill()
+	mjBtn:SetNormalTexture(E.Media.Textures.ArrowUp)
+	mjBtn:GetNormalTexture():SetRotation(math.pi * .25)
+	mjBtn:SetPushedTexture(E.Media.Textures.ArrowUp)
+	mjBtn:GetPushedTexture():SetRotation(math.pi * .25)
+	mjBtn:HookScript("OnEnter", function(btn)
+		local r, g, b = unpack(E.media.rgbvaluecolor)
+		btn:GetNormalTexture():SetVertexColor(r,g,b)
+		btn:GetPushedTexture():SetVertexColor(r,g,b)
+	end)
+	mjBtn:HookScript("OnLeave", function(btn)
+		btn:GetNormalTexture():SetVertexColor(1, 1, 1)
+		btn:GetPushedTexture():SetVertexColor(1, 1, 1)
+	end)
 end
