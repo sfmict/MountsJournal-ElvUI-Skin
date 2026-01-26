@@ -997,7 +997,7 @@ local function rules_onShow(self)
 		self.menu:ddSetDisplayMode("ElvUI")
 
 		self.panel:StripTextures()
-		self.panel:SetTemplate("Transparent")
+		self.panel:SetTemplate()
 
 		S:HandleTrimScrollBar(self.scrollBar)
 		S:HandleButton(self.cancel)
@@ -1066,8 +1066,7 @@ local function rules_onShow(self)
 
 		if self.actionPanel.groupName then -- retail
 			S:HandleEditBox(self.actionPanel.groupName)
-			self.actionPanel.groupName.backdrop:Point("TOPLEFT", 0, -2)
-			self.actionPanel.groupName.backdrop:Point("BOTTOMRIGHT", 0, 2)
+			self.actionPanel.groupName:SetHeight(self.actionPanel.groupName:GetHeight() - 2)
 		end
 
 		local function onAcqure()
@@ -1088,8 +1087,7 @@ local function rules_onShow(self)
 						edit.backdrop:Point("BOTTOMRIGHT", 0, 5)
 					else -- retail
 						S:HandleEditBox(edit)
-						edit.backdrop:Point("TOPLEFT", 0, -2)
-						edit.backdrop:Point("BOTTOMRIGHT", 0, 2)
+						edit:SetHeight(edit:GetHeight() - 2)
 					end
 				end
 			end
