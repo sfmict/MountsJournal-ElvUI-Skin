@@ -614,6 +614,12 @@ local function journal_init(journal)
 	S:HandleSliderFrame(journal.yMinSpeed.slider)
 	journal.yMinSpeed.slider:Point("BOTTOMLEFT", 0, 3)
 
+	if bgFrame.mountColor then -- retail
+		S:HandleSliderFrame(bgFrame.mountColor.threshold.slider)
+		bgFrame.mountColor.threshold.slider:Point("BOTTOMLEFT", 0, 3)
+		S:HandleButton(bgFrame.mountColor.reset)
+	end
+
 	local mountInfo = journal.mountDisplay.info
 	mountInfo.linkLang:ddSetDisplayMode("ElvUI")
 	mountInfo.linkLang.arrow:SetTexture(E.Media.Textures.ArrowUp)
