@@ -561,6 +561,7 @@ local function journal_init(journal)
 		journal.inspectFrame.TitleContainer.TitleBg:Hide()
 	end
 	S:HandleCloseButton(journal.inspectFrame.close)
+	journal.inspectFrame.settings:ddSetDisplayMode("ElvUI")
 
 	local function tabOnEnter(self)
 		self.text:SetTextColor(0.9, 0.8, 0.1)
