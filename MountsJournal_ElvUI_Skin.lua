@@ -615,11 +615,9 @@ local function journal_init(journal)
 	S:HandleSliderFrame(journal.yMinSpeed.slider)
 	journal.yMinSpeed.slider:Point("BOTTOMLEFT", 0, 3)
 
-	if bgFrame.mountColor then -- retail
-		S:HandleSliderFrame(bgFrame.mountColor.threshold.slider)
-		bgFrame.mountColor.threshold.slider:Point("BOTTOMLEFT", 0, 3)
-		S:HandleButton(bgFrame.mountColor.reset)
-	end
+	S:HandleSliderFrame(bgFrame.mountColor.threshold.slider)
+	bgFrame.mountColor.threshold.slider:Point("BOTTOMLEFT", 0, 3)
+	S:HandleButton(bgFrame.mountColor.reset)
 
 	local mountInfo = journal.mountDisplay.info
 	mountInfo.linkLang:ddSetDisplayMode("ElvUI")
@@ -1010,6 +1008,11 @@ local function rules_onShow(self)
 		S:HandleButton(self.cancel)
 		S:HandleButton(self.ok)
 
+		self.mapSelect:StripTextures()
+		self.mapSelect:SetTemplate("Transparent")
+		S:HandleButton(self.mapSelect.cancel)
+		S:HandleButton(self.mapSelect.ok)
+
 		self.mountSelect:StripTextures()
 		self.mountSelect:SetTemplate("Transparent")
 		S:HandleCloseButton(self.mountSelect.close)
@@ -1066,6 +1069,7 @@ local function rules_onShow(self)
 		end
 		hooksecurefunc(self.scrollBox, "Update", scrollButtons)
 
+		dropDonwSkin(self.mapOptionBtn)
 		dropDonwSkin(self.actionPanel.optionType)
 		local macro = self.actionPanel.macro
 		macro:SetTemplate("Transparent")
