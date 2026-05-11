@@ -1,4 +1,4 @@
-## Interface: 120005, 120001, 50503
+## Interface: 120007, 120005, 50504, 50503
 ## Title: MountsJournal ElvUI Skin
 ## Author: sfmict
 ## Version: @project-version@
@@ -15,4 +15,5 @@
 ## Category-zhCN: 战团藏品
 ## Category-zhTW: 戰隊收藏
 ## Dependencies: MountsJournal, ElvUI
+## OptionalDeps: ElvUI_WindTools
 MountsJournal_ElvUI_Skin.lua

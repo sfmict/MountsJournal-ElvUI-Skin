@@ -2,6 +2,7 @@ local E = ElvUI[1]
 if not (E.private.skins.blizzard.enable and E.private.skins.blizzard.collections) then return end
 local S = E:GetModule("Skins")
 local TT = E:GetModule('Tooltip')
+local WTS = C_AddOns.IsAddOnLoaded("ElvUI_WindTools") and WindTools and WindTools[1].Modules.Skins
 
 
 local function setBorderButton(btn, func)
@@ -175,6 +176,9 @@ local function petListSkin(journal, petList)
 	hooksecurefunc(petList.scrollBox, "Update", scrollPetButtons)
 
 	petList.companionOptionsMenu:ddSetDisplayMode("ElvUI")
+
+	-- WindTools
+	if WTS then WTS:CreateShadow(petList) end
 end
 
 
@@ -458,6 +462,10 @@ local function journal_init(journal)
 		collect.backdrop:SetShown(show)
 		CollectionsJournalTitleText:SetShown(show)
 		collect.CloseButton:SetShown(show)
+		  -- WindTools
+		if WTS and collect.shadow then
+			collect.shadow:SetShown(show)
+		end
 	end
 	updateBG(bgFrame)
 	bgFrame:HookScript("OnShow", updateBG)
@@ -700,6 +708,19 @@ local function journal_init(journal)
 	journal.bgFrame.mapTab:Point("RIGHT", journal.bgFrame.settingsTab, "LEFT", 5, 0)
 	S:HandleTab(journal.bgFrame.modelTab)
 	journal.bgFrame.modelTab:Point("RIGHT", journal.bgFrame.mapTab, "LEFT", 5, 0)
+
+	-- WindTools
+	if WTS then
+		WTS:CreateShadow(journal.bgFrame)
+		WTS:CreateShadow(journal.inspectFrame)
+		WTS:CreateShadow(mapSettings.existingLists)
+		journal.bgFrame.settingsTab:SetPushedTextOffset(0, 0)
+		WTS:ReskinTab(journal.bgFrame.settingsTab)
+		journal.bgFrame.mapTab:SetPushedTextOffset(0, 0)
+		WTS:ReskinTab(journal.bgFrame.mapTab)
+		journal.bgFrame.modelTab:SetPushedTextOffset(0, 0)
+		WTS:ReskinTab(journal.bgFrame.modelTab)
+	end
 end
 
 
@@ -742,6 +763,9 @@ MountsJournal:on("ADDON_INIT", function(mounts)
 		btn:StyleButton()
 		btn.icon:SetInside(btn)
 		btn.icon:SetTexture(texture)
+
+		-- WindTools
+		if WTS then WTS:CreateShadow(btn) end
 	end
 
 	skinButton(summonPanel.summon1)
@@ -1132,6 +1156,9 @@ local function snippets_onShow(self)
 	S:HandleTrimScrollBar(self.scrollBar)
 
 	self.snipMenu:ddSetDisplayMode("ElvUI")
+
+	-- WindTools
+	if WTS then WTS:CreateShadow(self) end
 end
 
 
