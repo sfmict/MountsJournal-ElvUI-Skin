@@ -828,7 +828,6 @@ local function config_onShow(self)
 		self.magicBroomGroup:SetTemplate(nil, true)
 	end
 	S:HandleCheckBox(self.useMagicBroom)
-
 	if self.magicBroomCombobox then -- retail
 		ddButton(self.magicBroomCombobox)
 	end
@@ -855,7 +854,15 @@ local function config_onShow(self)
 	S:HandleCheckBox(self.arrowButtons)
 	S:HandleCheckBox(self.showTypeSelBtn)
 
+	if self.summonGroup then -- retail
+		self.summonGroup:StripTextures()
+		self.summonGroup:SetTemplate(nil, true)
+	end
 	S:HandleCheckBox(self.copyMountTarget)
+	if self.randomMountEvery then -- retail
+		ddButton(self.randomMountEvery)
+	end
+
 	S:HandleCheckBox(self.openLinks)
 	S:HandleCheckBox(self.showWowheadLink)
 	S:HandleCheckBox(self.statisticCollection)
