@@ -1,4 +1,4 @@
-## Interface: 120100, 120007, 50504
+## Interface: 120100, 50504
 ## Title: MountsJournal ElvUI Skin
 ## Author: sfmict
 ## Version: @project-version@

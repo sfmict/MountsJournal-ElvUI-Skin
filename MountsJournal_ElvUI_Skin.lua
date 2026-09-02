@@ -491,7 +491,6 @@ local function journal_init(journal)
 	journal.mountCount:StripTextures()
 	bgFrame.rightInset:StripTextures()
 	bgFrame.rightInset:Point("BOTTOM", 0, 27)
-	journal.mountDisplay:StripTextures()
 	journal.mountDisplay.shadowOverlay:StripTextures()
 
 	if bgFrame.slotButton then -- retail
@@ -746,6 +745,11 @@ local journal_updateFilterNavBar do
 end
 
 
+function journal_setModelSceneBackground(journal)
+	journal.mountDisplay.yesMountsTex:SetTexture()
+end
+
+
 -- SUMMON PANEL
 MountsJournal:on("ADDON_INIT", function(mounts)
 	local summonPanel = mounts.summonPanel
@@ -850,6 +854,7 @@ local function config_onShow(self)
 	self.mountListGroup:SetTemplate(nil, true)
 	if self.coloredMountNames then -- retail
 		S:HandleCheckBox(self.coloredMountNames)
+		S:HandleCheckBox(self.expansionArt)
 	end
 	S:HandleCheckBox(self.arrowButtons)
 	S:HandleCheckBox(self.showTypeSelBtn)
@@ -880,7 +885,13 @@ end
 
 -- IconData
 local function config_iconData_onShow(self)
-	self:StripTextures()
+	if self.arrow then -- retail
+		local texture = self.arrow:GetTexture()
+		self:StripTextures()
+		self.arrow:SetTexture(texture)
+	else
+		self:StripTextures()
+	end
 	self:SetTemplate("Transparent")
 
 	S:HandleItemButton(self.selectedIconBtn)
@@ -1224,6 +1235,9 @@ local function skinUI()
 
 	hooksecurefunc(MountsJournalFrame, "init", journal_init)
 	hooksecurefunc(MountsJournalFrame, "updateFilterNavBar", journal_updateFilterNavBar)
+	if MountsJournalFrame.setModelSceneBackground then -- retail
+		hooksecurefunc(MountsJournalFrame, "setModelSceneBackground", journal_setModelSceneBackground)
+	end
 	MountsJournalConfig:HookScript("OnShow", config_onShow)
 	MountsJournalConfig.iconData:HookScript("OnShow", config_iconData_onShow)
 	MountsJournalConfigClasses:HookScript("OnShow", classConfig_onShow)
